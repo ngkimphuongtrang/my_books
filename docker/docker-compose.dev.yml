@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0.31
+    environment:
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=my_books
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    command: "--character-set-server=utf8mb4"
+    ports:
+      - "3306:3306"
+
