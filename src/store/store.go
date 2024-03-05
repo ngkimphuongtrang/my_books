@@ -20,6 +20,7 @@ type DBStores struct {
 	config *db.MySQLConfig
 
 	BookStore *BookStore
+	ReadStore *ReadStore
 }
 
 func NewDBStores(cfg *db.MySQLConfig) (*DBStores, error) {
@@ -32,6 +33,7 @@ func NewDBStores(cfg *db.MySQLConfig) (*DBStores, error) {
 		config:    cfg,
 		SQLStore:  NewSQLStore(gormDB),
 		BookStore: NewBookStore(gormDB),
+		ReadStore: NewReadStore(gormDB),
 	}, nil
 }
 
