@@ -1,0 +1,5 @@
+DROP SCHEMA IF EXISTS `my_books`;
+
+CREATE SCHEMA IF NOT EXISTS `my_books` DEFAULT CHARACTER SET `utf8mb4`;
+
+USE `my_books`;

@@ -13,6 +13,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	if err := stores.Migrate(); err != nil {
+		panic(err)
+	}
+
 	app := handler.NewApp(cfg, stores)
 	app.Start()
 }
