@@ -2,6 +2,7 @@ package store
 
 import (
 	"github.com/trangnkp/my_books/src/config"
+	"github.com/trangnkp/my_books/src/util"
 	"os"
 	"testing"
 )
@@ -15,7 +16,12 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
-	if err = dbStores.Migrate(""); err != nil {
+	err = dbStores.Reset(util.GetProjectRoot())
+	if err != nil {
+		panic(err)
+	}
+	
+	if err = dbStores.Migrate(util.GetProjectRoot()); err != nil {
 		panic(err)
 	}
 

@@ -223,6 +223,5 @@ func (m *MySQLMigrate) ResetDB() error {
 // DropDB drops the database
 // this function should not be used in production environment
 func (m *MySQLMigrate) DropDB() error {
-
 	return m.migrate.Drop()
 }

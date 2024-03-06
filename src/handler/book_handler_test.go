@@ -69,11 +69,13 @@ func TestBookHandler_Create(t *testing.T) {
 				Writer:  httptest.NewRecorder(),
 			}
 			testApp.handleCreateBook(ctx)
-			responseRecorder := ctx.Writer.(*httptest.ResponseRecorder)
+			responseRecorder, _ := ctx.Writer.(*httptest.ResponseRecorder)
 			assert.Equal(t, tc.expectedResponse.StatusCode, responseRecorder.Code)
 
 			var response httpkit.Response
 			rr := ctx.Writer.(*httptest.ResponseRecorder).Result().Body
+			defer rr.Close()
+
 			err := json.NewDecoder(rr).Decode(&response)
 			require.NoError(t, err)
 			require.Equal(t, tc.expectedResponse.Verdict, response.Verdict)

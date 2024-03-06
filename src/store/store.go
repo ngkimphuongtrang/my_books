@@ -88,5 +88,4 @@ func (s *DBStores) Reset(baseDir string) error {
 	}
 
 	return s.Migrate(baseDir)
-
 }
