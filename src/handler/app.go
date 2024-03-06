@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/trangnkp/my_books/src/config"
+	"github.com/trangnkp/my_books/src/container"
 	"github.com/trangnkp/my_books/src/httpkit"
 	"github.com/trangnkp/my_books/src/store"
 	"net/http"
@@ -66,7 +67,7 @@ func (app *App) addPublicRouteHandlers(routeHandlers ...*httpkit.RouteHandler) {
 				Writer:       w,
 				Response:     &httpkit.Response{},
 				Request:      r,
-				Params:       httpkit.Map{},
+				Params:       container.Map{},
 				Idx:          -1,
 				Middlewares:  middlewareFn,
 			}

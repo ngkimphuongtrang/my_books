@@ -3,6 +3,7 @@ package httpkit
 import (
 	"context"
 	"errors"
+	"github.com/trangnkp/my_books/src/container"
 	"net/http"
 )
 
@@ -13,7 +14,7 @@ type RequestContext struct {
 	Response *Response
 
 	Request *http.Request
-	Params  Map
+	Params  container.Map
 
 	Idx         int
 	Middlewares []func(ctx *RequestContext)
@@ -44,7 +45,7 @@ func (ctx *RequestContext) SendJSON(
 
 // SendError sends internal error response to client
 func (ctx *RequestContext) SendError(err error) error {
-	return ctx.SendJSON(http.StatusInternalServerError, VerdictFailure, err.Error(), Map{})
+	return ctx.SendJSON(http.StatusInternalServerError, VerdictFailure, err.Error(), container.Map{})
 }
 
 // GetContext convenient method to get context from the request

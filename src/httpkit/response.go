@@ -2,12 +2,11 @@ package httpkit
 
 import (
 	"encoding/json"
+	"github.com/trangnkp/my_books/src/container"
 	"log"
 	"net/http"
 	"time"
 )
-
-type Map map[string]interface{}
 
 type Response struct {
 	StatusCode int         `json:"status_code"`
@@ -26,7 +25,7 @@ func SendJSON(
 	w.Header().Set(HeaderContentType, ContentTypeJSON)
 	w.WriteHeader(statusCode)
 
-	obj := Map{
+	obj := container.Map{
 		"verdict": verdict,
 		"message": message,
 		"data":    data,

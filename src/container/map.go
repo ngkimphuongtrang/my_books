@@ -1,0 +1,34 @@
+package container
+
+type Map map[string]interface{}
+
+func (m Map) FindMissingKeys(requiredKeys ...string) []string {
+	var missingKeys []string
+	for _, key := range requiredKeys {
+		_, found := m[key]
+		if !found {
+			missingKeys = append(missingKeys, key)
+		}
+	}
+
+	return missingKeys
+}
+
+func (m Map) FindForbiddenKeys(allowedKeys ...string) []string {
+	var redundantKeys []string
+	for key := range m {
+		if !ArrayStringContains(allowedKeys, key) {
+			redundantKeys = append(redundantKeys, key)
+		}
+	}
+	return redundantKeys
+}
+
+func ArrayStringContains(a []string, v string) bool {
+	for _, e := range a {
+		if e == v {
+			return true
+		}
+	}
+	return false
+}

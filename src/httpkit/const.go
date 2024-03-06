@@ -10,7 +10,9 @@ const (
 	VerdictMissingAuthorization = "missing_authorization"
 	VerdictUnknownAuthorization = "unknown_authorization"
 
-	VerdictFailure           = "failure"
-	VerdictMissingParameters = "missing_parameters"
-	VerdictSuccess           = "success"
+	VerdictFailure             = "failure"
+	VerdictMissingParameters   = "missing_parameters"
+	VerdictSuccess             = "success"
+	VerdictForbiddenParameters = "forbidden_parameters"
+	VerdictInvalidParameters   = "invalid_parameters"
 )
