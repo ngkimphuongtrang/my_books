@@ -29,7 +29,7 @@ func (app *App) handleCreateBook(ctx *httpkit.RequestContext) {
 		if helper.IsDuplicateKeyError(err) && strings.Contains(err.Error(), "name_author_idx") {
 			_ = ctx.SendJSON(
 				http.StatusBadRequest,
-				httpkit.VerdictForbiddenParameters,
+				httpkit.VerdictExistedRecord,
 				"duplicated name or author",
 				container.Map{})
 			return
@@ -52,28 +52,22 @@ func (app *App) validateParameters(ctx *httpkit.RequestContext, r *CreateBookReq
 			container.Map{})
 		return false
 	}
-	/*
-		missingParams := ctx.Params.FindMissingKeys(requiredParams...)
-		if len(missingParams) > 0 {
-			_ = ctx.SendJSON(
-				http.StatusBadRequest,
-				httpkit.VerdictMissingParameters,
-				"some required parameters are missing",
-				container.Map{"missing_parameters": missingParams})
-			return false
-		}
+	var missingParams []string
+	if r.Name == "" {
+		missingParams = append(missingParams, "name")
+	}
+	if r.Author == "" {
+		missingParams = append(missingParams, "author")
+	}
+	if len(missingParams) > 0 {
+		_ = ctx.SendJSON(
+			http.StatusBadRequest,
+			httpkit.VerdictMissingParameters,
+			"some required parameters are missing",
+			container.Map{"missing_parameters": missingParams})
+		return false
+	}
 
-		allowedParams := append(requiredParams, optionalParams...)
-		forbiddenParams := ctx.Params.FindForbiddenKeys(allowedParams...)
-		if len(forbiddenParams) > 0 {
-			_ = ctx.SendJSON(
-				http.StatusBadRequest,
-				httpkit.VerdictForbiddenParameters,
-				"some parameters are forbidden",
-				container.Map{"forbidden_parameters": forbiddenParams})
-			return false
-		}
-	*/
 	//TODO: standardize parameters
 	return true
 }

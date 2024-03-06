@@ -15,7 +15,7 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
-	if err = dbStores.Migrate(); err != nil {
+	if err = dbStores.Migrate(""); err != nil {
 		panic(err)
 	}
 

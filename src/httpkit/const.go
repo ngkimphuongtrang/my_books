@@ -15,4 +15,5 @@ const (
 	VerdictSuccess             = "success"
 	VerdictForbiddenParameters = "forbidden_parameters"
 	VerdictInvalidParameters   = "invalid_parameters"
+	VerdictExistedRecord       = "existed_record"
 )

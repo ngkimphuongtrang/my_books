@@ -192,3 +192,37 @@ func resolveDatabaseConnectionURL(config *MySQLConfig) string {
 	}
 	return format.FormatDSN()
 }
+
+// ResetDB resets the databases to clean state
+// this function should not be used in production environment
+func (m *MySQLMigrate) ResetDB() error {
+	err := m.DropDB()
+	if err != nil {
+		return err
+	}
+
+	sourceErr, databaseErr := m.migrate.Close()
+	if sourceErr != nil {
+		log.Error(sourceErr)
+		return sourceErr
+	}
+	if databaseErr != nil {
+		log.Error(databaseErr)
+		return databaseErr
+	}
+
+	// recreate again schema_migrations table
+	err = m.newMigrateObject()
+	if err != nil {
+		return err
+	}
+
+	return m.MigrateDB()
+}
+
+// DropDB drops the database
+// this function should not be used in production environment
+func (m *MySQLMigrate) DropDB() error {
+
+	return m.migrate.Drop()
+}

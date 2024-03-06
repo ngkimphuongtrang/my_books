@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"context"
 	"github.com/trangnkp/my_books/src/config"
+	"github.com/trangnkp/my_books/src/model"
 	"github.com/trangnkp/my_books/src/store"
+	"github.com/trangnkp/my_books/src/util"
 	"os"
 	"testing"
 )
@@ -20,10 +23,27 @@ func testMainWrapper(m *testing.M) int {
 	if err != nil {
 		panic(err)
 	}
-	if err := stores.Migrate(); err != nil {
+
+	err = stores.Reset(util.GetProjectRoot())
+	if err != nil {
 		panic(err)
 	}
+	//if err = stores.Migrate(util.GetProjectRoot()); err != nil {
+	//	panic(err)
+	//}
+	seedData(stores)
 
 	testApp = NewApp(cfg, stores)
 	return m.Run()
+}
+
+func seedData(stores *store.DBStores) {
+	record := &model.Book{
+		Name:   "duplicated",
+		Author: "duplicated",
+	}
+	err := stores.BookStore.Create(context.Background(), record)
+	if err != nil {
+		panic(err)
+	}
 }

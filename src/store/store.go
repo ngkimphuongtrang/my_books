@@ -3,8 +3,12 @@ package store
 import (
 	log "github.com/sirupsen/logrus"
 	"github.com/trangnkp/my_books/src/db"
-	"github.com/trangnkp/my_books/src/util"
 	"gorm.io/gorm"
+	"path"
+)
+
+const (
+	dbMigrateDirectory = "/schema/migration/"
 )
 
 type SQLStore struct {
@@ -37,8 +41,8 @@ func NewDBStores(cfg *db.MySQLConfig) (*DBStores, error) {
 	}, nil
 }
 
-func (s *DBStores) Migrate() error {
-	migrationPath := util.GetProjectRoot() + "/schema/migration/"
+func (s *DBStores) Migrate(baseDir string) error {
+	migrationPath := baseDir + dbMigrateDirectory
 	migrate, err := db.NewMySQLMigrate(s.config, migrationPath)
 	if err != nil {
 		log.Errorf("%v", err)
@@ -68,4 +72,21 @@ func (s *DBStores) Close() error {
 	}
 
 	return nil
+}
+
+func (s *DBStores) Reset(baseDir string) error {
+	migrationPath := path.Join(baseDir, dbMigrateDirectory)
+	migrate, err := db.NewMySQLMigrate(s.config, migrationPath)
+	if err != nil {
+		return err
+	}
+	defer migrate.Close()
+
+	err = migrate.ResetDB()
+	if err != nil {
+		return err
+	}
+
+	return s.Migrate(baseDir)
+
 }

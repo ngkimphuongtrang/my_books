@@ -4,6 +4,7 @@ import (
 	"github.com/trangnkp/my_books/src/config"
 	"github.com/trangnkp/my_books/src/handler"
 	"github.com/trangnkp/my_books/src/store"
+	"github.com/trangnkp/my_books/src/util"
 )
 
 func main() {
@@ -13,7 +14,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	if err := stores.Migrate(); err != nil {
+	if err := stores.Migrate(util.GetProjectRoot()); err != nil {
 		panic(err)
 	}
 
