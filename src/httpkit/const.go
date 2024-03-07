@@ -16,4 +16,5 @@ const (
 	VerdictForbiddenParameters = "forbidden_parameters"
 	VerdictInvalidParameters   = "invalid_parameters"
 	VerdictExistedRecord       = "existed_record"
+	VerdictRecordNotFound      = "record_not_found"
 )

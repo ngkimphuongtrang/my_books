@@ -12,6 +12,8 @@ func (s ReadSource) String() string {
 	return [...]string{"hard_copy", "soft_copy", "audio"}[s]
 }
 
+var ReadSources = [...]ReadSource{SourceHardCopy, SourceSoftCopy, SourceAudio}
+
 type BookLanguage int
 
 const (
@@ -20,5 +22,5 @@ const (
 )
 
 func (l BookLanguage) String() string {
-	return [...]string{"LangVI", "EN"}[l]
+	return [...]string{"VI", "EN"}[l]
 }

@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	log "github.com/sirupsen/logrus"
 	"github.com/trangnkp/my_books/src/container"
 	"github.com/trangnkp/my_books/src/helper"
 	"github.com/trangnkp/my_books/src/httpkit"
@@ -18,10 +17,9 @@ type CreateBookRequest struct {
 
 func (app *App) handleCreateBook(ctx *httpkit.RequestContext) {
 	var r CreateBookRequest
-	if !app.validateParameters(ctx, &r) {
+	if !app.validateCreateBookParameters(ctx, &r) {
 		return
 	}
-	log.Println(r.Name, r.Author)
 
 	book := &model.Book{Name: r.Name, Author: r.Author}
 	err := app.stores.BookStore.Create(ctx.GetContext(), book)
@@ -42,7 +40,7 @@ func (app *App) handleCreateBook(ctx *httpkit.RequestContext) {
 	_ = ctx.SendJSON(http.StatusOK, httpkit.VerdictSuccess, "book is created successfully", container.Map{"id": book.ID})
 }
 
-func (app *App) validateParameters(ctx *httpkit.RequestContext, r *CreateBookRequest) bool {
+func (app *App) validateCreateBookParameters(ctx *httpkit.RequestContext, r *CreateBookRequest) bool {
 	err := json.NewDecoder(ctx.Request.Body).Decode(r)
 	if err != nil {
 		_ = ctx.SendJSON(

@@ -1,6 +1,18 @@
 package container
 
+import "fmt"
+
 type Map map[string]interface{}
+
+func (m Map) ToJSONString() string {
+	s := `{`
+	for k, v := range m {
+		s += fmt.Sprintf(`"%s":"%s",`, k, v)
+	}
+	s = s[:len(s)-1]
+	s += `}`
+	return s
+}
 
 func (m Map) FindMissingKeys(requiredKeys ...string) []string {
 	var missingKeys []string
