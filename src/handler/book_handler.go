@@ -3,11 +3,9 @@ package handler
 import (
 	"encoding/json"
 	"github.com/trangnkp/my_books/src/container"
-	"github.com/trangnkp/my_books/src/helper"
 	"github.com/trangnkp/my_books/src/httpkit"
 	"github.com/trangnkp/my_books/src/model"
 	"net/http"
-	"strings"
 )
 
 type CreateBookRequest struct {
@@ -20,19 +18,23 @@ func (app *App) handleCreateBook(ctx *httpkit.RequestContext) {
 	if !app.validateCreateBookParameters(ctx, &r) {
 		return
 	}
+	bookID, err := app.stores.BookStore.FindByNameAndAuthor(ctx.GetContext(), r.Name, r.Author)
+	if err != nil {
+		_ = ctx.SendError(err)
+		return
+	}
+	if bookID > 0 {
+		_ = ctx.SendJSON(
+			http.StatusBadRequest,
+			httpkit.VerdictExistedRecord,
+			"duplicated name or author",
+			container.Map{"book_id": bookID})
+		return
+	}
 
 	book := &model.Book{Name: r.Name, Author: r.Author}
-	err := app.stores.BookStore.Create(ctx.GetContext(), book)
+	err = app.stores.BookStore.Create(ctx.GetContext(), book)
 	if err != nil {
-		if helper.IsDuplicateKeyError(err) && strings.Contains(err.Error(), "name_author_idx") {
-			_ = ctx.SendJSON(
-				http.StatusBadRequest,
-				httpkit.VerdictExistedRecord,
-				"duplicated name or author",
-				container.Map{})
-			return
-		}
-
 		_ = ctx.SendError(err)
 		return
 	}

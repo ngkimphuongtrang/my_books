@@ -24,6 +24,20 @@ func (s *BookStore) Create(ctx context.Context, record *model.Book) error {
 	return nil
 }
 
+func (s *BookStore) FindByNameAndAuthor(ctx context.Context, name, author string) (int64, error) {
+	b := model.Book{}
+	err := s.db.WithContext(ctx).
+		Where("name = ? AND author = ?", name, author).Last(&b).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 0, nil
+		}
+		log.Errorf("%v", err)
+		return 0, err
+	}
+	return b.ID, nil
+}
+
 func (s *BookStore) FindByID(ctx context.Context, id int64) (*model.Book, error) {
 	b := model.Book{}
 	err := s.db.WithContext(ctx).Where("id = ?", id).Last(&b).Error
