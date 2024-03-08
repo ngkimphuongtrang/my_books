@@ -29,4 +29,10 @@ var (
 		Method: http.MethodGet,
 		Path:   "/books",
 	}
+
+	RouteListReads = &httpkit.Route{
+		Name:   "list_reads",
+		Method: http.MethodGet,
+		Path:   "/reads",
+	}
 )

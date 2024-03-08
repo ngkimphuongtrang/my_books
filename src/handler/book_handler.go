@@ -74,33 +74,8 @@ func (app *App) validateCreateBookParameters(ctx *httpkit.RequestContext, r *Cre
 }
 
 func (app *App) handleListBooks(ctx *httpkit.RequestContext) {
-	pageIDParam := ctx.Request.URL.Query().Get("page_id")
-	perPageParam := ctx.Request.URL.Query().Get("per_page")
-	if len(pageIDParam) == 0 || len(perPageParam) == 0 {
-		_ = ctx.SendJSON(
-			http.StatusBadRequest,
-			httpkit.VerdictInvalidParameters,
-			"offset and limit are required to be greater than 0",
-			container.Map{})
-		return
-	}
-
-	pageID, err := strconv.ParseInt(pageIDParam, 10, 64)
-	if err != nil {
-		_ = ctx.SendJSON(
-			http.StatusBadRequest,
-			httpkit.VerdictInvalidParameters,
-			"offset is not an integer",
-			container.Map{})
-		return
-	}
-	perPage, err := strconv.ParseInt(perPageParam, 10, 64)
-	if err != nil {
-		_ = ctx.SendJSON(
-			http.StatusBadRequest,
-			httpkit.VerdictInvalidParameters,
-			"limit is not an integer",
-			container.Map{})
+	pageID, perPage, valid := app.validateListParameters(ctx)
+	if !valid {
 		return
 	}
 	search := ctx.Request.URL.Query().Get("search")
@@ -122,4 +97,36 @@ func (app *App) handleListBooks(ctx *httpkit.RequestContext) {
 			"items": books,
 			"count": count,
 		})
+}
+
+func (app *App) validateListParameters(ctx *httpkit.RequestContext) (int64, int64, bool) {
+	pageIDParam := ctx.Request.URL.Query().Get("page_id")
+	perPageParam := ctx.Request.URL.Query().Get("per_page")
+	if len(pageIDParam) == 0 || len(perPageParam) == 0 {
+		_ = ctx.SendJSON(
+			http.StatusBadRequest,
+			httpkit.VerdictInvalidParameters,
+			"offset and limit are required to be greater than 0",
+			container.Map{})
+		return 0, 0, false
+	}
+	pageID, err := strconv.ParseInt(pageIDParam, 10, 64)
+	if err != nil {
+		_ = ctx.SendJSON(
+			http.StatusBadRequest,
+			httpkit.VerdictInvalidParameters,
+			"offset is not an integer",
+			container.Map{})
+		return 0, 0, false
+	}
+	perPage, err := strconv.ParseInt(perPageParam, 10, 64)
+	if err != nil {
+		_ = ctx.SendJSON(
+			http.StatusBadRequest,
+			httpkit.VerdictInvalidParameters,
+			"limit is not an integer",
+			container.Map{})
+		return 0, 0, false
+	}
+	return pageID, perPage, true
 }

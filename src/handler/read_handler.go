@@ -76,7 +76,7 @@ func (app *App) validateCreateReadParameters(ctx *httpkit.RequestContext, r *Cre
 		return false
 	}
 
-	if !r.isValidSource() {
+	if !isValidSource(r.Source) {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,
 			httpkit.VerdictInvalidParameters,
@@ -103,11 +103,88 @@ func (r *CreateReadRequest) getMissingParams() []string {
 	return missingParams
 }
 
-func (r *CreateReadRequest) isValidSource() bool {
-	for _, source := range store.ReadSources {
-		if r.Source == source.String() {
+func isValidSource(source string) bool {
+	for _, s := range store.ReadSources {
+		if source == s.String() {
 			return true
 		}
 	}
 	return false
+}
+
+func (app *App) handleListReads(ctx *httpkit.RequestContext) {
+	pageID, perPage, valid := app.validateListParameters(ctx)
+	if !valid {
+		return
+	}
+	readFilter, valid := app.getReadFilter(ctx)
+	if !valid {
+		return
+	}
+
+	offset, limit := (pageID-1)*perPage, perPage
+	reads, err := app.stores.ReadStore.List(ctx.GetContext(), int(offset), int(limit), readFilter)
+	if err != nil {
+		_ = ctx.SendError(err)
+		return
+	}
+
+	count, err := app.stores.ReadStore.Count(ctx.GetContext(), readFilter)
+	if err != nil {
+		_ = ctx.SendError(err)
+		return
+	}
+
+	_ = ctx.SendJSON(http.StatusOK, httpkit.VerdictSuccess, "list reads successfully",
+		container.Map{
+			"items": reads,
+			"count": count,
+		})
+}
+
+func (app *App) getReadFilter(ctx *httpkit.RequestContext) (*store.ListReadsFilter, bool) {
+	fromYearParam := ctx.Request.URL.Query().Get("from_year")
+	toYearParam := ctx.Request.URL.Query().Get("to_year")
+	language := ctx.Request.URL.Query().Get("language")
+	source := ctx.Request.URL.Query().Get("source")
+	if len(source) > 0 && !isValidSource(source) {
+		_ = ctx.SendJSON(
+			http.StatusBadRequest,
+			httpkit.VerdictInvalidParameters,
+			"source is invalid",
+			container.Map{"valid_sources": store.ReadSources})
+		return nil, false
+	}
+	var fromYear, toYear int
+	if len(fromYearParam) > 0 {
+		fromYearDate, err := time.Parse("2006", fromYearParam)
+		if err != nil {
+			_ = ctx.SendJSON(
+				http.StatusBadRequest,
+				httpkit.VerdictInvalidParameters,
+				"from_year is in invalid format",
+				container.Map{"required_format": "2006"})
+			return nil, false
+		}
+		fromYear = fromYearDate.Year()
+	}
+	if len(toYearParam) > 0 {
+		toYearDate, err := time.Parse(time.RFC3339, toYearParam)
+		if err != nil {
+			_ = ctx.SendJSON(
+				http.StatusBadRequest,
+				httpkit.VerdictInvalidParameters,
+				"to_year is in invalid format",
+				container.Map{"required_format": "2006"})
+			return nil, false
+		}
+		toYear = toYearDate.Year()
+	}
+
+	return &store.ListReadsFilter{
+		FromYear: fromYear,
+		ToYear:   toYear,
+		Language: language,
+		Source:   source,
+	}, true
 }

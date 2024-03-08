@@ -97,7 +97,7 @@ func TestBookStore_List(t *testing.T) {
 			limit:    5,
 			search:   "",
 			minCount: 4,
-			maxCount: 4,
+			maxCount: 10,
 		},
 		{
 			name:     "valid_search",

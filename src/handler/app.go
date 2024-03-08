@@ -58,6 +58,10 @@ func (app *App) initRouteHandlers() []*httpkit.RouteHandler {
 			Route:  RouteListBooks,
 			Handle: app.handleListBooks,
 		},
+		{
+			Route:  RouteListReads,
+			Handle: app.handleListReads,
+		},
 	}
 }
 
