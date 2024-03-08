@@ -23,3 +23,10 @@ func (s *ReadStore) Create(ctx context.Context, record *model.Read) error {
 
 	return nil
 }
+
+type ListReadsFilter struct {
+	FromYear int
+	ToYear   int
+	Source   string
+	Language string
+}

@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/trangnkp/my_books/src/container"
 	"github.com/trangnkp/my_books/src/httpkit"
+	"log"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -81,4 +83,28 @@ func TestBookHandler_Create(t *testing.T) {
 			require.Equal(t, tc.expectedResponse.Verdict, response.Verdict)
 		})
 	}
+}
+
+func TestBookHandler_List(t *testing.T) {
+	t.Parallel()
+
+	ctx := &httpkit.RequestContext{
+		Request: httptest.NewRequest("GET", "/books?page_id=1&per_page=5", nil),
+		Writer:  httptest.NewRecorder(),
+	}
+	testApp.handleListBooks(ctx)
+	responseRecorder, _ := ctx.Writer.(*httptest.ResponseRecorder)
+	assert.Equal(t, 200, responseRecorder.Code)
+
+	rr := ctx.Writer.(*httptest.ResponseRecorder).Result().Body
+	defer rr.Close()
+
+	body, _ := container.CreateMapFromReader(rr)
+	log.Println("data", body["data"])
+	data, ok := body["data"].(map[string]interface{})
+	require.True(t, ok)
+	items, ok := data["items"].([]interface{})
+	log.Println(items)
+	require.True(t, ok)
+	require.NotZero(t, len(items))
 }

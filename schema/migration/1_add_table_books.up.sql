@@ -6,8 +6,9 @@ CREATE TABLE IF NOT EXISTS `my_books`.`books`
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(`id`),
-    UNIQUE INDEX `name_author_idx`(`name`, `author`)
-    ) ENGINE = InnoDB
+    UNIQUE INDEX `name_author_idx`(`name`, `author`),
+    FULLTEXT `name_fulltext_idx`(`name`) WITH PARSER ngram
+) ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `my_books`.`reads`

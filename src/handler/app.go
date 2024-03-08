@@ -50,6 +50,14 @@ func (app *App) initRouteHandlers() []*httpkit.RouteHandler {
 			Route:  RouteCreateBook,
 			Handle: app.handleCreateBook,
 		},
+		{
+			Route:  RouteCreateRead,
+			Handle: app.handleCreateRead,
+		},
+		{
+			Route:  RouteListBooks,
+			Handle: app.handleListBooks,
+		},
 	}
 }
 

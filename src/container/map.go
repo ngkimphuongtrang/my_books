@@ -1,6 +1,10 @@
 package container
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+)
 
 type Map map[string]interface{}
 
@@ -43,4 +47,24 @@ func ArrayStringContains(a []string, v string) bool {
 		}
 	}
 	return false
+}
+
+// CreateMapFromReader creates map from a JSON reader
+func CreateMapFromReader(reader io.Reader) (Map, error) {
+	m := Map{}
+
+	if reader == nil {
+		return m, nil
+	}
+
+	// numbers are represented as string instead of float64
+	decoder := json.NewDecoder(reader)
+	decoder.UseNumber()
+
+	err := decoder.Decode(&m)
+	if err == io.EOF {
+		return m, nil
+	}
+
+	return m, err
 }
