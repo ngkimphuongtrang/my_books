@@ -15,13 +15,13 @@ var (
 	RouteCreateBook = &httpkit.Route{
 		Name:   "create_book",
 		Method: http.MethodPost,
-		Path:   "/book",
+		Path:   "/books",
 	}
 
 	RouteCreateRead = &httpkit.Route{
 		Name:   "create_read",
 		Method: http.MethodPost,
-		Path:   "/read",
+		Path:   "/reads",
 	}
 
 	RouteListBooks = &httpkit.Route{

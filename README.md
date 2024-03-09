@@ -28,7 +28,7 @@ Based on the preceding context, it is logical to introduce a new module named My
 To handle Challenge 1, My Books should have an ability to save all data in file system and automatically inserts them back into database when it is on back.
 
 ### Database design
-Read [here](database.md) to see how this design was decided.
+Read [here](docs/database.md) to see how this design was decided.
 ```sql
 Table books {
   id integer [primary key ]
@@ -50,10 +50,40 @@ Table reads {
 
 Ref: reads.book_id > books.id 
 ```
-![Schema](db-diagram.png)
+![Schema](docs/db-diagram.png)
 
-### API Specification
+### APIs 
+
+#### POST /book
+Tracker creates a book with this information
+
+##### Body
+| Field  | Type   | Description                |
+|--------|--------|----------------------------|
+| name   | string | (R) Name of the book       |
+| author | string | (R) Author of the the book |
+
+##### Response 
+Return id of the created book.
+```json
+{
+    "data": {
+        "id": 7
+    },
+    "message": "book is created successfully",
+    "time": "2024-03-09T15:04:12+07:00",
+    "verdict": "success"
+}
+```
+
 
 ### References
 
 - TS Dive-in 
+
+
+### TODO
+- UT for handler: test path
+- POST, GET to same path
+- id -> uuid
+- should return id?

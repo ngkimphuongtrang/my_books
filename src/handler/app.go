@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/gorilla/mux"
 	"github.com/trangnkp/my_books/src/config"
 	"github.com/trangnkp/my_books/src/container"
 	"github.com/trangnkp/my_books/src/httpkit"
@@ -66,6 +67,7 @@ func (app *App) initRouteHandlers() []*httpkit.RouteHandler {
 }
 
 func (app *App) addPublicRouteHandlers(routeHandlers ...*httpkit.RouteHandler) {
+	router := mux.NewRouter()
 	for _, routeHandler := range routeHandlers {
 		var middlewareFn []func(ctx *httpkit.RequestContext)
 		for _, r := range app.middlewares {
@@ -85,9 +87,10 @@ func (app *App) addPublicRouteHandlers(routeHandlers ...*httpkit.RouteHandler) {
 			}
 			ctx.Next()
 		}
-		var handler http.Handler = http.HandlerFunc(handlerFunc)
-		app.mux.Handle(routeHandler.Route.Path, handler)
+
+		router.HandleFunc(routeHandler.Route.Path, handlerFunc).Methods(routeHandler.Route.Method)
 	}
+	app.mux.Handle("/", router) // Or you can directly assign app.mux = router
 }
 
 func (app *App) Start() {
