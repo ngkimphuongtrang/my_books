@@ -7,12 +7,11 @@ import (
 	"github.com/trangnkp/my_books/src/model"
 	"github.com/trangnkp/my_books/src/store"
 	"net/http"
-	"strconv"
 	"time"
 )
 
 type CreateReadRequest struct {
-	BookID       string     `json:"book_id"`
+	BookID       int64      `json:"book_id"`
 	Source       string     `json:"source"`
 	Language     string     `json:"language"`
 	FinishedDate *time.Time `json:"finished_date"`
@@ -27,16 +26,8 @@ func (app *App) handleCreateRead(ctx *httpkit.RequestContext) {
 	if r.Language == "" {
 		r.Language = store.LangVI.String()
 	}
-	bookID, err := strconv.ParseInt(r.BookID, 10, 64)
-	if err != nil {
-		_ = ctx.SendJSON(
-			http.StatusBadRequest,
-			httpkit.VerdictInvalidParameters,
-			"book_id is not an integer",
-			container.Map{})
-		return
-	}
-	book, err := app.stores.BookStore.FindByID(ctx.GetContext(), bookID)
+
+	book, err := app.stores.BookStore.FindByID(ctx.GetContext(), r.BookID)
 	if err != nil {
 		_ = ctx.SendError(err)
 		return
@@ -46,7 +37,7 @@ func (app *App) handleCreateRead(ctx *httpkit.RequestContext) {
 		return
 	}
 
-	read := &model.Read{BookID: bookID, Source: r.Source, Language: r.Language, FinishedDate: *r.FinishedDate}
+	read := &model.Read{BookID: r.BookID, Source: r.Source, Language: r.Language, FinishedDate: *r.FinishedDate}
 	err = app.stores.ReadStore.Create(ctx.GetContext(), read)
 	if err != nil {
 		_ = ctx.SendError(err)
@@ -91,7 +82,7 @@ func (app *App) validateCreateReadParameters(ctx *httpkit.RequestContext, r *Cre
 
 func (r *CreateReadRequest) getMissingParams() []string {
 	var missingParams []string
-	if r.BookID == "" {
+	if r.BookID == 0 {
 		missingParams = append(missingParams, "book_id")
 	}
 	if r.Source == "" {

@@ -54,7 +54,7 @@ Ref: reads.book_id > books.id
 
 ### APIs 
 
-#### POST /book
+#### POST /books
 Tracker creates a book with this information
 
 ##### Body
@@ -76,6 +76,50 @@ Return id of the created book.
 }
 ```
 
+#### GET /books
+Get list of books
+
+##### Body
+| Field    | Type   | Description                                                    |
+|----------|--------|----------------------------------------------------------------|
+| page     | int    | (O) The page number of the results to fetch, default: 1        |
+| per_page | int    | (O) The number of results per page (max 100), default: 30      |
+| search   | string | (O) The key string to search on book name                      |
+
+#### Response 
+```json 
+{
+    "data": {
+        "count": 7,
+        "items": [
+            {
+                "id": 1,
+                "name": "Giết con chim nhại",
+                "author": "",
+                "created_at": "2024-03-08T20:05:58+07:00",
+                "updated_at": "2024-03-08T20:05:58+07:00"
+            }
+        ]
+    },
+    "message": "get list of books successfully",
+    "time": "2024-03-09T15:30:05+07:00",
+    "verdict": "success"
+}
+```
+
+#### POST /reads 
+Tracker creates a read with a created book
+
+##### Body
+| Field         | Type      | Description                                              |
+|---------------|-----------|----------------------------------------------------------|
+| book_id       | int       | (R) ID of the created book you have just finished read   |
+| source        | string    | (R) Source of book you read: hard_copy, soft_copy, audio |
+| language      | string    | (R) Language of the book you read, example: EN, VI       |
+| finished_date | timestamp | (R) Date you finish reading the book                     |
+
+#### Response 
+
 
 ### References
 
@@ -86,4 +130,11 @@ Return id of the created book.
 - UT for handler: test path
 - POST, GET to same path
 - id -> uuid
-- should return id?
+- should return id in GET /books?
+- if client makes request: page_id, not support parameter? we reject or ignore?
+- how can make language, source parameters not required in POST /reads
+- restrict value of language is EN, VI
+- catch error when book_id does not exist (remove manual check if book_id )
+- do source value need to save in database?
+- 
+- 

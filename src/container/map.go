@@ -2,20 +2,18 @@ package container
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 )
 
 type Map map[string]interface{}
 
-func (m Map) ToJSONString() string {
-	s := `{`
-	for k, v := range m {
-		s += fmt.Sprintf(`"%s":"%s",`, k, v)
+// JSON converts map to JSON string
+func (m Map) JSON() (string, error) {
+	b, err := json.Marshal(m)
+	if err != nil {
+		return "", err
 	}
-	s = s[:len(s)-1]
-	s += `}`
-	return s
+	return string(b), nil
 }
 
 func (m Map) FindMissingKeys(requiredKeys ...string) []string {

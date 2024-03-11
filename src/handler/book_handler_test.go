@@ -89,7 +89,7 @@ func TestBookHandler_List(t *testing.T) {
 	t.Parallel()
 
 	ctx := &httpkit.RequestContext{
-		Request: httptest.NewRequest("GET", "/books?page_id=1&per_page=5", nil),
+		Request: httptest.NewRequest("GET", "/books?per_page=5", nil),
 		Writer:  httptest.NewRecorder(),
 	}
 	testApp.handleListBooks(ctx)

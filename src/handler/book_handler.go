@@ -9,6 +9,11 @@ import (
 	"strconv"
 )
 
+const (
+	defaultPage    = 1
+	defaultPerPage = 30
+)
+
 type CreateBookRequest struct {
 	Name   string
 	Author string
@@ -100,33 +105,31 @@ func (app *App) handleListBooks(ctx *httpkit.RequestContext) {
 }
 
 func (app *App) validateListParameters(ctx *httpkit.RequestContext) (int64, int64, bool) {
-	pageIDParam := ctx.Request.URL.Query().Get("page_id")
+	pageIDParam := ctx.Request.URL.Query().Get("page")
 	perPageParam := ctx.Request.URL.Query().Get("per_page")
-	if len(pageIDParam) == 0 || len(perPageParam) == 0 {
-		_ = ctx.SendJSON(
-			http.StatusBadRequest,
-			httpkit.VerdictInvalidParameters,
-			"offset and limit are required to be greater than 0",
-			container.Map{})
-		return 0, 0, false
+	var page, perPage int64 = defaultPage, defaultPerPage
+	var err error
+	if len(pageIDParam) > 0 {
+		page, err = strconv.ParseInt(pageIDParam, 10, 64)
+		if err != nil {
+			_ = ctx.SendJSON(
+				http.StatusBadRequest,
+				httpkit.VerdictInvalidParameters,
+				"offset is not an integer",
+				container.Map{})
+			return 0, 0, false
+		}
 	}
-	pageID, err := strconv.ParseInt(pageIDParam, 10, 64)
-	if err != nil {
-		_ = ctx.SendJSON(
-			http.StatusBadRequest,
-			httpkit.VerdictInvalidParameters,
-			"offset is not an integer",
-			container.Map{})
-		return 0, 0, false
+	if len(perPageParam) > 0 {
+		perPage, err = strconv.ParseInt(perPageParam, 10, 64)
+		if err != nil {
+			_ = ctx.SendJSON(
+				http.StatusBadRequest,
+				httpkit.VerdictInvalidParameters,
+				"limit is not an integer",
+				container.Map{})
+			return 0, 0, false
+		}
 	}
-	perPage, err := strconv.ParseInt(perPageParam, 10, 64)
-	if err != nil {
-		_ = ctx.SendJSON(
-			http.StatusBadRequest,
-			httpkit.VerdictInvalidParameters,
-			"limit is not an integer",
-			container.Map{})
-		return 0, 0, false
-	}
-	return pageID, perPage, true
+	return page, perPage, true
 }
