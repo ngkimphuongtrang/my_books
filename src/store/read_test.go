@@ -89,3 +89,28 @@ func TestCreate_List(t *testing.T) {
 		})
 	}
 }
+
+func TestReadStore_Count(t *testing.T) {
+	t.Parallel()
+
+	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
+		ctx := context.Background()
+		books, err := dbStores.BookStore.List(ctx, 0, 100, "")
+		require.NoError(t, err)
+		n := len(books)
+		for i := 0; i < n; i++ {
+			read := &model.Read{
+				BookID:       books[i].ID,
+				FinishedDate: time.Now(),
+			}
+			err = dbStores.ReadStore.Create(ctx, read)
+			require.NoError(t, err)
+		}
+
+		count, err := dbStores.ReadStore.Count(ctx, &ListReadsFilter{})
+		require.NoError(t, err)
+		require.LessOrEqual(t, int64(n), count)
+	})
+}

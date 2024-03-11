@@ -188,4 +188,5 @@ Tracker creates a read with a created book
 - how can make language, source parameters not required in POST /reads
 - restrict value of language is EN, VI
 - catch error when book_id does not exist (remove manual check if book_id )
+  - I can actively know the client's request is invalid if I manually check on app
 - do source value need to save in database? separate table

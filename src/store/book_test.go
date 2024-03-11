@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"fmt"
 	"github.com/stretchr/testify/require"
 	"github.com/trangnkp/my_books/src/config"
 	"github.com/trangnkp/my_books/src/db"
@@ -134,4 +135,26 @@ func TestBookStore_List(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestBookStore_Count(t *testing.T) {
+	t.Parallel()
+
+	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
+		ctx := context.Background()
+		n := 10
+		for i := 0; i < n; i++ {
+			book := &model.Book{
+				Name: fmt.Sprintf("abc_%d", i),
+			}
+			err := dbStores.BookStore.Create(ctx, book)
+			require.NoError(t, err)
+		}
+
+		count, err := dbStores.BookStore.Count(ctx, "abc")
+		require.NoError(t, err)
+		require.LessOrEqual(t, int64(n), count)
+	})
 }
