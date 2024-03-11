@@ -54,39 +54,62 @@ Ref: reads.book_id > books.id
 
 ### APIs 
 
-#### POST /books
+#### Create a book
+<details> 
+    <summary><code>POST</code><code><b>/books</b></code></summary>
 Tracker creates a book with this information
 
 ##### Body
-| Field  | Type   | Description                |
-|--------|--------|----------------------------|
-| name   | string | (R) Name of the book       |
-| author | string | (R) Author of the the book |
+| Name   | Required | Type   | Description            |
+|--------|----------|--------|------------------------|
+| name   | Y        | string | Name of the book       |
+| author | Y        | string | Author of the the book |
 
 ##### Response 
-Return id of the created book.
+| Status Code | Verdict           | Body                | Description                            |
+|-------------|-------------------|---------------------|----------------------------------------|
+| 200         | success           | `"data": {"id": 7}` | Success, Return id of the created book |
+| 400         | invalid_parameter |                     |                                        |
+
+##### Example 
+- cURL
+
+- Response
+
 ```json
 {
-    "data": {
-        "id": 7
-    },
-    "message": "book is created successfully",
-    "time": "2024-03-09T15:04:12+07:00",
-    "verdict": "success"
+  "data": {
+    "id": 7
+  },
+  "message": "book is created successfully",
+  "time": "2024-03-09T15:04:12+07:00",
+  "verdict": "success"
 }
 ```
+</details>
 
-#### GET /books
-Get list of books
+#### Get list of books
+<details> 
+    <summary><code>GET</code><code><b>/books</b></code></summary>
 
-##### Body
-| Field    | Type   | Description                                                    |
-|----------|--------|----------------------------------------------------------------|
-| page     | int    | (O) The page number of the results to fetch, default: 1        |
-| per_page | int    | (O) The number of results per page (max 100), default: 30      |
-| search   | string | (O) The key string to search on book name                      |
+##### Parameters
+| Name     | Required | Type   | Description                                           |
+|----------|----------|--------|-------------------------------------------------------|
+| page     |          | int    | The page number of the results to fetch, default: 1   |
+| per_page |          | int    | The number of results per page (max 100), default: 30 |
+| search   |          | string | The key string to search on book name                 |
 
-#### Response 
+##### Response
+| Status Code | Verdict           | Body                                                                                                                                                                       | Description                    |
+|-------------|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| 200         | success           | `"data": {"count": 7,"items": [{ "id": 1,"name": "Giết con chim nhại","author": "","created_at": "2024-03-08T20:05:58+07:00","updated_at": "2024-03-08T20:05:58+07:00"}]}` | Success, Return  list of books |
+| 400         | invalid_parameter |                                                                                                                                                                            |                                |
+
+##### Example
+- cURL
+
+- Response
+
 ```json 
 {
     "data": {
@@ -106,20 +129,50 @@ Get list of books
     "verdict": "success"
 }
 ```
+</details>
 
-#### POST /reads 
+#### Create a read 
+<details> 
+    <summary><code>POST</code><code><b>/reads</b></code></summary>
+
 Tracker creates a read with a created book
 
 ##### Body
-| Field         | Type      | Description                                              |
-|---------------|-----------|----------------------------------------------------------|
-| book_id       | int       | (R) ID of the created book you have just finished read   |
-| source        | string    | (R) Source of book you read: hard_copy, soft_copy, audio |
-| language      | string    | (R) Language of the book you read, example: EN, VI       |
-| finished_date | timestamp | (R) Date you finish reading the book                     |
+| Name          | Required | Type      | Description                                          |
+|---------------|----------|-----------|------------------------------------------------------|
+| book_id       | Y        | int       | ID of the created book you have just finished read   |
+| source        | Y        | string    | Source of book you read: hard_copy, soft_copy, audio |
+| language      | Y        | string    | Language of the book you read, example: EN, VI       |
+| finished_date | Y        | timestamp | Date you finish reading the book                     |
 
-#### Response 
+##### Response
+| Status Code | Verdict   | Body                 | Description                        |
+|-------------|-----------|----------------------|------------------------------------|
+| 200         | success   | `"data": {"id": 7}`  | Success, Return ID of created read |
+| 404         | not_found |                      |                                    |
 
+</details>
+
+#### Get list of reads
+<details> 
+    <summary><code>GET</code><code><b>/reads</b></code></summary>
+
+##### Parameters
+| Name      | Required | Type    | Description                                                             |
+|-----------|----------|---------|-------------------------------------------------------------------------|
+| page      |          | int     | The page number of the results to fetch, default: 1                     |
+| per_page  |          | int     | The number of results per page (max 100), default: 30                   |
+| from_year |          | string  | The start year to search on, example: 2012                              |
+| to_year   |          | string  | The end year to search on, example: 2012                                |
+| language  |          | string  | The language to search on, example: VI                                  |
+| source    |          | string  | The source to search on, limited on values: hard_copy, soft_copy, audio |
+
+##### Response
+| Status Code | Verdict           | Body | Description                    |
+|-------------|-------------------|------|--------------------------------|
+| 200         | success           |      | Success, Return  list of reads |
+| 400         | invalid_parameter |      |                                |
+</details>
 
 ### References
 
@@ -135,6 +188,4 @@ Tracker creates a read with a created book
 - how can make language, source parameters not required in POST /reads
 - restrict value of language is EN, VI
 - catch error when book_id does not exist (remove manual check if book_id )
-- do source value need to save in database?
-- 
-- 
+- do source value need to save in database? separate table
