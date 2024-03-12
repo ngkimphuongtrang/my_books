@@ -2,30 +2,25 @@
 
 ## Context
 ### Motivation
-I read some books a year, I also record which books I read in some days on a Note app. Sometimes I want to know how many books I read for each year, I manually count by my hands to retrieve the result. 
 
-Hence, I write a personal book management application to save books I have read and retrieve some statistics I want efficiently. 
+I track the books I read throughout the year using a Note app, but tallying the annual total becomes a manual and time-consuming task. 
+
+To streamline this process, I have created a personal book management application that not only stores a record of the books I've read but also generates statistics effortlessly, such as my yearly reading totals.
 
 ### Requirements
 #### Functional
 
-- User story 1. As a user, I want to make a request to create a book.
-- User story 2. As a user, I want to make a request to create a read which records when, how I read a book.
-- User story 3. As a user, I want to search if I have read a book before (in case I read thousands of books and can't remember clearly if I have read one).
-- User story 4. As a user, I want to show how many books I read in a year, etc.
+- User story 1. As a user, I need the ability to create a book entry through a simple request.
+- User story 2. As a user, I need to log my reading sessions, detailing when and how I read each book.
+- User story 3. As an avid reader with a vast library, I require a search function to verify whether I have previously read a specific book.
+- User story 4. As a user, I want to easily view statistics, such as the number of books I've read in a given year.
 
 #### Non-functional
 
-- Consistency: Server should be able to return understandable and instructable responses even user makes a corrupted request. 
-
-#### Constraints & Challenge
-Challenge 1. There isn't an always-on server
-It is my personal application and I don't have a server hosted on cloud, I just only have a personal laptop which usually is on from 9am to 10pm everyday, the remaining time it is off.
+- Consistency: The server should provide clear and instructive responses, ensuring understandability even when a user submits an erroneous request.
 
 ## Decision
-Based on the preceding context, it is logical to introduce a new module named My Books, tasked with creating book, read requests, querying the insight of books and reads in database.
-
-To handle Challenge 1, My Books should have an ability to save all data in file system and automatically inserts them back into database when it is on back.
+Given the context provided, it would be prudent to introduce a new module called "My Books," which would be responsible for creating book entries, logging reading sessions, and querying insights about books and reading trends in the database.
 
 ### Database design
 Read [here](docs/database.md) to see how this design was decided.
@@ -173,11 +168,6 @@ Tracker creates a read with a created book
 | 200         | success           |      | Success, Return  list of reads |
 | 400         | invalid_parameter |      |                                |
 </details>
-
-### References
-
-- TS Dive-in 
-
 
 ### TODO
 - UT for handler: test path

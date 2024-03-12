@@ -30,15 +30,15 @@ Using two tables (`books` and `read_books`) is a normalized approach that preven
 - `language`
 
 **Pros:**
-- Avoids data redundancy: Book details are stored once, regardless of how many times you read the book.
-- Update efficiency: If a book's details change, you only need to update one record in the `books` table.
+- Avoids data redundancy: Book details are stored once, regardless of how many times user reads the book.
+- Update efficiency: If a book's details change, we only need to update one record in the `books` table.
 - Integrity: It is easier to maintain consistent data for book details.
 
 **Cons:**
-- Slightly more complex queries: To get details about the books you've read, you'll need to join tables.
-- Dependency on consistent book identification: You'll need to ensure that you correctly link `read_books` entries to the `books` table.
+- Slightly more complex queries: To get details about the books user has read, we'll need to join tables.
+- Dependency on consistent book identification: We'll need to ensure that we correctly link `read_books` entries to the `books` table.
 
-This approach is generally preferred in database design because it is scalable and efficient in terms of storage. To ensure that we link to the correct book, we could implement a user interface that allows you to search for a book by name or author before logging it as read, reducing the chance of duplicate entries.
+This approach is generally preferred in database design because it is scalable and efficient in terms of storage. To ensure that we link to the correct book, we could implement a user interface that allows user to search for a book by name or author before logging it as read, reducing the chance of duplicate entries.
 
 ### Option 2: Single Table (Denormalized Design)
 Keeping all data in one `reads` table simplifies the design and makes some queries more straightforward.
@@ -69,7 +69,7 @@ While the single-table design might seem simpler initially, the two-table approa
 - Use dropdowns or autocomplete features that help users select from existing authors and titles.
 - Regularly review the `books` table to merge any duplicates that may have occurred.
 
-Ultimately, if we plan to expand your database in the future or potentially integrate with other systems, the two-table approach would likely serve you better in the long run.
+Ultimately, if we plan to expand database in the future or potentially integrate with other systems, the two-table approach would likely serve us better in the long run.
 
 ## References
 - Chat-GPT 4.0
