@@ -86,3 +86,8 @@ Ultimately, if we plan to expand database in the future or potentially integrate
 - catch error when book_id does not exist (remove manual check if book_id )
    - I can actively know the client's request is invalid if I manually check on app
 - do source value need to save in database? separate table
+- add update books
+- user insert the book name, our system query the author on Google
+- add column on book if author is VNese or not, so that the book can have EN language
+- add table author with their nationality so that i can find out which country produces my interest author
+- add column on book: original name 

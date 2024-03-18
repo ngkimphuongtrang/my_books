@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `my_books`.`books`
     PRIMARY KEY(`id`),
     UNIQUE INDEX `name_author_idx`(`name`, `author`),
     FULLTEXT `name_fulltext_idx`(`name`) WITH PARSER ngram
-                                                                  ) ENGINE = InnoDB
+) ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `my_books`.`reads`
@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS `my_books`.`reads`
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(`id`)
-    ) ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb4;
+) ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
 
 INSERT INTO `books` (`name`, `author`)
 VALUES ('Khi lỗi thuộc về các vì sao', 'John Green'),
@@ -71,7 +71,7 @@ VALUES ('Khi lỗi thuộc về các vì sao', 'John Green'),
        ('Cây cam ngọt của tôi', 'Jose Mauro de Vansconcelos'),
        ('Giao tiếp bất kỳ ai', 'Jo Condrill'),
        ('Nói nhiều không bằng nói đúng', '2.1/2')
-    ('Chú bé mang Pyjama sọc', 'John Boyne'),
+       ('Chú bé mang Pyjama sọc', 'John Boyne'),
        ('Bước chậm lại giữa thế gian vội vã', 'Hae Min'),
        ('Không diệt không sinh đừng sợ hãi', 'Thích Nhất Hạnh'),
        ('Đi tìm lẽ sống', 'Viktor E. Frankl'),
@@ -79,6 +79,6 @@ VALUES ('Khi lỗi thuộc về các vì sao', 'John Green'),
        ('Những đòn tâm lý trong bán hàng', 'Brian Tracy'),
        ('Thói quen nguyên tử', 'James Clear'),
        ('Tâm lý học hành vi', 'Khương Nguy')
-;
+       ;
 
 
