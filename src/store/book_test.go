@@ -158,3 +158,48 @@ func TestBookStore_Count(t *testing.T) {
 		require.LessOrEqual(t, int64(n), count)
 	})
 }
+
+func TestBookStore_FindByNameAndAuthor(t *testing.T) {
+	t.Parallel()
+
+	book := &model.Book{
+		Name:   "Atomic Habits",
+		Author: "Harper Lee",
+	}
+	ctx := context.Background()
+	err := dbStores.BookStore.Create(ctx, book)
+	require.NoError(t, err)
+
+	testCases := []struct {
+		name     string
+		bookName string
+		author   string
+		found    bool
+	}{
+		{
+			name:     "found",
+			bookName: "Atomic Habits",
+			author:   "Harper Lee",
+			found:    true,
+		},
+		{
+			name:     "not_found",
+			bookName: "Ngay xua co mot con bo",
+			found:    false,
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			id, err := dbStores.BookStore.FindByNameAndAuthor(ctx, tc.bookName, tc.author)
+			require.NoError(t, err)
+			if tc.found {
+				require.NotZero(t, id)
+			} else {
+				require.Zero(t, id)
+			}
+		})
+	}
+}

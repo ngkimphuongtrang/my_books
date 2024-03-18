@@ -56,12 +56,24 @@ func TestCreate_List(t *testing.T) {
 
 	testCases := []struct {
 		name     string
+		offset   int
+		limit    int
 		filter   *ListReadsFilter
 		minCount int
 		maxCount int
+		hasErr   bool
 	}{
 		{
-			name: "hard_copy_source",
+			name:     "invalid_limit",
+			filter:   &ListReadsFilter{},
+			minCount: 0,
+			maxCount: 0,
+			hasErr:   true,
+		},
+		{
+			name:   "hard_copy_source",
+			offset: 0,
+			limit:  5,
 			filter: &ListReadsFilter{
 				Source: "hard_copy",
 			},
@@ -69,12 +81,24 @@ func TestCreate_List(t *testing.T) {
 			maxCount: 10,
 		},
 		{
-			name: "from_year",
+			name:   "to_year",
+			offset: 0,
+			limit:  5,
 			filter: &ListReadsFilter{
 				ToYear: 2014,
 			},
 			minCount: 1,
 			maxCount: 1,
+		},
+		{
+			name:   "from_year",
+			offset: 0,
+			limit:  5,
+			filter: &ListReadsFilter{
+				FromYear: 2014,
+			},
+			minCount: 1,
+			maxCount: 2,
 		},
 	}
 	for _, tc := range testCases {
@@ -82,7 +106,11 @@ func TestCreate_List(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			reads, err := dbStores.ReadStore.List(context.Background(), 0, 5, tc.filter)
+			reads, err := dbStores.ReadStore.List(context.Background(), tc.offset, tc.limit, tc.filter)
+			if tc.hasErr {
+				require.Error(t, err)
+				return
+			}
 			require.NoError(t, err)
 			require.LessOrEqual(t, tc.minCount, len(reads))
 			require.LessOrEqual(t, len(reads), tc.maxCount)

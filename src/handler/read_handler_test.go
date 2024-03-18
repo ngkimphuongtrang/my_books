@@ -110,3 +110,60 @@ func TestReadHandler_Create(t *testing.T) {
 		})
 	}
 }
+
+func TestReadHandler_List(t *testing.T) {
+	t.Parallel()
+	testCases := []struct {
+		name             string
+		needSeedRead     bool
+		expectedResponse httpkit.Response
+	}{
+		{
+			name:         "success",
+			needSeedRead: true,
+			expectedResponse: httpkit.Response{
+				StatusCode: 200,
+				Verdict:    "success",
+				Message:    "list reads successfully",
+			},
+		},
+		{
+			name:         "no_read",
+			needSeedRead: false,
+			expectedResponse: httpkit.Response{
+				StatusCode: 200,
+				Verdict:    "success",
+				Message:    "list reads successfully",
+			},
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			if tc.needSeedRead {
+				randomRead := &model.Read{
+					BookID:       1,
+					Source:       "hard_copy",
+					FinishedDate: time.Now(),
+				}
+				err := testApp.stores.ReadStore.Create(context.Background(), randomRead)
+				require.NoError(t, err)
+			}
+			ctx := &httpkit.RequestContext{
+				Request: httptest.NewRequest("GET", "/reads", nil),
+				Writer:  httptest.NewRecorder(),
+			}
+			testApp.handleListReads(ctx)
+			responseRecorder, _ := ctx.Writer.(*httptest.ResponseRecorder)
+			var response httpkit.Response
+			rr := ctx.Writer.(*httptest.ResponseRecorder).Result().Body
+			defer rr.Close()
+			err := json.NewDecoder(rr).Decode(&response)
+			require.NoError(t, err)
+			assert.Equal(t, tc.expectedResponse.StatusCode, responseRecorder.Code)
+			require.Equal(t, tc.expectedResponse.Verdict, response.Verdict)
+			require.Equal(t, tc.expectedResponse.Message, response.Message)
+		})
+	}
+}
