@@ -8,6 +8,11 @@ import (
 	"github.com/trangnkp/my_books/src/httpkit"
 )
 
+const (
+	defaultPage    = 1
+	defaultPerPage = 30
+)
+
 type Validation struct {
 }
 

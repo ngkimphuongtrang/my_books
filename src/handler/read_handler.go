@@ -151,7 +151,7 @@ func (h *ReadHandler) getReadFilter(ctx *httpkit.RequestContext) (*store.ListRea
 		fromYear = fromYearDate.Year()
 	}
 	if len(toYearParam) > 0 {
-		toYearDate, err := time.Parse(time.RFC3339, toYearParam)
+		toYearDate, err := time.Parse("2006", toYearParam)
 		if err != nil {
 			_ = ctx.SendJSON(
 				http.StatusBadRequest,

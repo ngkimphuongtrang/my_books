@@ -11,11 +11,6 @@ import (
 	"github.com/trangnkp/my_books/src/types"
 )
 
-const (
-	defaultPage    = 1
-	defaultPerPage = 30
-)
-
 type BookHandler struct {
 	stores     *store.DBStores
 	validation *Validation
