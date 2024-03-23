@@ -105,7 +105,7 @@ func (h *ReadHandler) handleListReads(ctx *httpkit.RequestContext) {
 	}
 
 	offset, limit := (pageID-1)*perPage, perPage
-	reads, err := h.stores.ReadStore.List(ctx.GetContext(), int(offset), int(limit), readFilter)
+	reads, err := h.stores.ReadStore.List(ctx.GetContext(), offset, limit, readFilter)
 	if err != nil {
 		_ = ctx.SendError(err)
 		return

@@ -95,7 +95,7 @@ func (h *BookHandler) handleListBooks(ctx *httpkit.RequestContext) {
 	search := ctx.Request.URL.Query().Get("search")
 	offset, limit := (pageID-1)*perPage, perPage
 	filter := &store.ListBooksFilter{Name: search}
-	books, err := h.stores.BookStore.List(ctx.GetContext(), int(offset), int(limit), filter)
+	books, err := h.stores.BookStore.List(ctx.GetContext(), offset, limit, filter)
 	if err != nil {
 		_ = ctx.SendError(err)
 		return
