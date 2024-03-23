@@ -44,7 +44,9 @@ func (s *ReadStore) List(ctx context.Context, offset, limit int, filter *ListRea
 	db = filter.buildQuery(db)
 
 	var reads []*model.Read
-	err := db.Offset(offset).Limit(limit).Order("id ASC").Find(&reads).Error
+
+	// Preload("Book") is equivalent to join books on reads.book_id = books.id
+	err := db.Preload("Book").Offset(offset).Limit(limit).Order("reads.id ASC").Find(&reads).Error
 	if err != nil {
 		log.Errorf("%v", err)
 		return nil, err

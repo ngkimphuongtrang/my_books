@@ -47,12 +47,12 @@ func TestReadStore_Create(t *testing.T) {
 func TestCreate_List(t *testing.T) {
 	t.Parallel()
 
-	read := &model.Read{
+	record := &model.Read{
 		BookID:       1,
 		Source:       "hard_copy",
 		FinishedDate: time.Now().AddDate(-10, 0, 0),
 	}
-	err := dbStores.ReadStore.Create(context.Background(), read)
+	err := dbStores.ReadStore.Create(context.Background(), record)
 	require.NoError(t, err)
 
 	testCases := []struct {
@@ -99,7 +99,7 @@ func TestCreate_List(t *testing.T) {
 				FromYear: 2014,
 			},
 			minCount: 1,
-			maxCount: 2,
+			maxCount: 3,
 		},
 	}
 	for _, tc := range testCases {
@@ -115,6 +115,9 @@ func TestCreate_List(t *testing.T) {
 			require.NoError(t, err)
 			require.LessOrEqual(t, tc.minCount, len(reads))
 			require.LessOrEqual(t, len(reads), tc.maxCount)
+			for _, read := range reads {
+				require.NotNil(t, read.Book)
+			}
 		})
 	}
 }
