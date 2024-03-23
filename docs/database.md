@@ -77,17 +77,21 @@ Ultimately, if we plan to expand database in the future or potentially integrate
 
 ### TODO
 - UT for handler: test path
-- POST, GET to same path
-- id -> uuid
 - should return id in GET /books?
 - if client makes request: page_id, not support parameter? we reject or ignore?
 - how can make language, source parameters not required in POST /reads
 - restrict value of language is EN, VI
-- catch error when book_id does not exist (remove manual check if book_id )
-   - I can actively know the client's request is invalid if I manually check on app
+
 - do source value need to save in database? separate table
 - add update books
 - user insert the book name, our system query the author on Google
 - add column on book if author is VNese or not, so that the book can have EN language
 - add table author with their nationality so that i can find out which country produces my interest author
+- statistic: which source of book I read the most
 - add column on book: original name 
+
+### Resolved
+- id -> uuid
+- POST, GET for same path
+- catch error when book_id does not exist (remove manual check if book_id ). I can actively know the client's request is invalid if I manually check on app
+  - Can keep them both, do not need to couple them: validate on app, and on database.

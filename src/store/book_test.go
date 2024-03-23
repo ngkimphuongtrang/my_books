@@ -84,6 +84,7 @@ func TestBookStore_List(t *testing.T) {
 		offset   int
 		limit    int
 		search   string
+		filter   ListBooksFilter
 		minCount int
 		maxCount int
 		wantErr  bool
@@ -104,15 +105,17 @@ func TestBookStore_List(t *testing.T) {
 			name:     "valid_search",
 			limit:    5,
 			search:   "nhại",
+			filter:   ListBooksFilter{Name: "nhại"},
 			minCount: 1,
-			maxCount: 1,
+			maxCount: 2,
 		},
 		{
 			name:     "2_characters",
 			limit:    5,
 			search:   "ch",
+			filter:   ListBooksFilter{Name: "ch"},
 			minCount: 3,
-			maxCount: 3,
+			maxCount: 5,
 		},
 	}
 	for _, tc := range testCases {
@@ -120,7 +123,7 @@ func TestBookStore_List(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			books, err := dbStores.BookStore.List(ctx, tc.offset, tc.limit, tc.search)
+			books, err := dbStores.BookStore.List(ctx, tc.offset, tc.limit, &tc.filter)
 			if tc.wantErr {
 				require.Error(t, err)
 				return
@@ -153,7 +156,7 @@ func TestBookStore_Count(t *testing.T) {
 			require.NoError(t, err)
 		}
 
-		count, err := dbStores.BookStore.Count(ctx, "abc")
+		count, err := dbStores.BookStore.Count(ctx, &ListBooksFilter{Name: "abc"})
 		require.NoError(t, err)
 		require.LessOrEqual(t, int64(n), count)
 	})

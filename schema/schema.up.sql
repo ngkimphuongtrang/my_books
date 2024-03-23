@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `my_books`.`books`
     PRIMARY KEY(`id`),
     UNIQUE INDEX `name_author_idx`(`name`, `author`),
     FULLTEXT `name_fulltext_idx`(`name`) WITH PARSER ngram
-                                                                  ) ENGINE = InnoDB
+) ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `my_books`.`reads`
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `my_books`.`reads`
     `source` VARCHAR(127) NOT NULL DEFAULT '',
     `language` VARCHAR(31) NOT NULL DEFAULT '',
     `finished_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `note` TEXT NOT NULL DEFAULT '',
+    `note` TEXT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(`id`)
@@ -35,7 +35,7 @@ VALUES ('Khi lỗi thuộc về các vì sao', 'John Green'),
        ('Hoàng tử bé', 'Antoine de Saint-Exupéry'),
        ('Nhà giả kim', 'Paulo Coelho'),
        ('Cà phê cùng Tony', 'Tony Buổi Sáng'),
-       ('Ngày người thương một người thuong khác', 'Trí'),
+       ('Ngày người thương một người thương khác', 'Trí'),
        ('Trên đường băng', 'Tony Buổi Sáng'),
        ('Tuổi trẻ đáng giá bao nhiêu?', 'Rosie Nguyễn'),
        ('Đắc nhân tâm', 'Dale Carnegie'),

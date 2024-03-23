@@ -16,7 +16,8 @@ type App struct {
 
 	config *config.AppConfig
 
-	stores *store.DBStores
+	stores   *store.DBStores
+	handlers *Handler
 }
 
 func NewApp(cfg *config.AppConfig, stores *store.DBStores) *App {
@@ -32,6 +33,7 @@ func (app *App) setup() {
 	app.mux = http.NewServeMux()
 	app.httpHandler = app.mux
 	app.middlewares = []httpkit.Middleware{&httpkit.RequestTimeMiddleware{}}
+	app.handlers = NewHandler(app.stores)
 
 	app.setupRoutes()
 }
@@ -49,19 +51,19 @@ func (app *App) initRouteHandlers() []*httpkit.RouteHandler {
 		},
 		{
 			Route:  RouteCreateBook,
-			Handle: app.handleCreateBook,
+			Handle: app.handlers.BookHandler.handleCreateBook,
 		},
 		{
 			Route:  RouteCreateRead,
-			Handle: app.handleCreateRead,
+			Handle: app.handlers.ReadHandler.handleCreateRead,
 		},
 		{
 			Route:  RouteListBooks,
-			Handle: app.handleListBooks,
+			Handle: app.handlers.BookHandler.handleListBooks,
 		},
 		{
 			Route:  RouteListReads,
-			Handle: app.handleListReads,
+			Handle: app.handlers.ReadHandler.handleListReads,
 		},
 	}
 }

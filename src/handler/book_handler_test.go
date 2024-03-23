@@ -70,7 +70,7 @@ func TestBookHandler_Create(t *testing.T) {
 				Request: httptest.NewRequest("POST", "/books", strings.NewReader(tc.requestBody)),
 				Writer:  httptest.NewRecorder(),
 			}
-			testApp.handleCreateBook(ctx)
+			bookHandler.handleCreateBook(ctx)
 			responseRecorder, _ := ctx.Writer.(*httptest.ResponseRecorder)
 			assert.Equal(t, tc.expectedResponse.StatusCode, responseRecorder.Code)
 
@@ -92,7 +92,7 @@ func TestBookHandler_List(t *testing.T) {
 		Request: httptest.NewRequest("GET", "/books?per_page=5", nil),
 		Writer:  httptest.NewRecorder(),
 	}
-	testApp.handleListBooks(ctx)
+	bookHandler.handleListBooks(ctx)
 	responseRecorder, _ := ctx.Writer.(*httptest.ResponseRecorder)
 	assert.Equal(t, 200, responseRecorder.Code)
 

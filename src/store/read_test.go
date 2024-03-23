@@ -125,7 +125,7 @@ func TestReadStore_Count(t *testing.T) {
 		t.Parallel()
 
 		ctx := context.Background()
-		books, err := dbStores.BookStore.List(ctx, 0, 100, "")
+		books, err := dbStores.ReadStore.List(ctx, 0, 100, &ListReadsFilter{})
 		require.NoError(t, err)
 		n := len(books)
 		for i := 0; i < n; i++ {

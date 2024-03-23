@@ -17,4 +17,6 @@ const (
 	VerdictInvalidParameters   = "invalid_parameters"
 	VerdictExistedRecord       = "existed_record"
 	VerdictRecordNotFound      = "record_not_found"
+	VerdictRedundant           = "redundant"
+	VerdictUnspecifiedResource = "unspecified_resource"
 )

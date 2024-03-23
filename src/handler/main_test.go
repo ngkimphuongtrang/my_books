@@ -11,6 +11,8 @@ import (
 )
 
 var testApp *App
+var bookHandler *BookHandler
+var readHandler *ReadHandler
 
 func TestMain(m *testing.M) {
 	os.Exit(testMainWrapper(m))
@@ -32,6 +34,8 @@ func testMainWrapper(m *testing.M) int {
 	//	panic(err)
 	//}
 	seedData(stores)
+	bookHandler = NewBookHandler(stores)
+	readHandler = NewReadHandler(stores)
 
 	testApp = NewApp(cfg, stores)
 	return m.Run()

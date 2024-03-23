@@ -5,8 +5,9 @@ import (
 	"github.com/trangnkp/my_books/src/container"
 	"github.com/trangnkp/my_books/src/httpkit"
 	"github.com/trangnkp/my_books/src/model"
+	"github.com/trangnkp/my_books/src/store"
+	"github.com/trangnkp/my_books/src/types"
 	"net/http"
-	"strconv"
 )
 
 const (
@@ -14,17 +15,24 @@ const (
 	defaultPerPage = 30
 )
 
-type CreateBookRequest struct {
-	Name   string
-	Author string
+type BookHandler struct {
+	stores     *store.DBStores
+	validation *Validation
 }
 
-func (app *App) handleCreateBook(ctx *httpkit.RequestContext) {
-	var r CreateBookRequest
-	if !app.validateCreateBookParameters(ctx, &r) {
+func NewBookHandler(stores *store.DBStores) *BookHandler {
+	return &BookHandler{
+		stores:     stores,
+		validation: NewValidation(),
+	}
+}
+
+func (h *BookHandler) handleCreateBook(ctx *httpkit.RequestContext) {
+	var r types.CreateBookRequest
+	if !h.validateCreateBookParameters(ctx, &r) {
 		return
 	}
-	bookID, err := app.stores.BookStore.FindByNameAndAuthor(ctx.GetContext(), r.Name, r.Author)
+	bookID, err := h.stores.BookStore.FindByNameAndAuthor(ctx.GetContext(), r.Name, r.Author)
 	if err != nil {
 		_ = ctx.SendError(err)
 		return
@@ -39,7 +47,7 @@ func (app *App) handleCreateBook(ctx *httpkit.RequestContext) {
 	}
 
 	book := &model.Book{Name: r.Name, Author: r.Author}
-	err = app.stores.BookStore.Create(ctx.GetContext(), book)
+	err = h.stores.BookStore.Create(ctx.GetContext(), book)
 	if err != nil {
 		_ = ctx.SendError(err)
 		return
@@ -48,7 +56,7 @@ func (app *App) handleCreateBook(ctx *httpkit.RequestContext) {
 	_ = ctx.SendJSON(http.StatusOK, httpkit.VerdictSuccess, "book is created successfully", container.Map{"id": book.ID})
 }
 
-func (app *App) validateCreateBookParameters(ctx *httpkit.RequestContext, r *CreateBookRequest) bool {
+func (h *BookHandler) validateCreateBookParameters(ctx *httpkit.RequestContext, r *types.CreateBookRequest) bool {
 	err := json.NewDecoder(ctx.Request.Body).Decode(r)
 	if err != nil {
 		_ = ctx.SendJSON(
@@ -78,20 +86,21 @@ func (app *App) validateCreateBookParameters(ctx *httpkit.RequestContext, r *Cre
 	return true
 }
 
-func (app *App) handleListBooks(ctx *httpkit.RequestContext) {
-	pageID, perPage, valid := app.validateListParameters(ctx)
+func (h *BookHandler) handleListBooks(ctx *httpkit.RequestContext) {
+	pageID, perPage, valid := h.validation.validateListParameters(ctx)
 	if !valid {
 		return
 	}
 	search := ctx.Request.URL.Query().Get("search")
 	offset, limit := (pageID-1)*perPage, perPage
-	books, err := app.stores.BookStore.List(ctx.GetContext(), int(offset), int(limit), search)
+	filter := &store.ListBooksFilter{Name: search}
+	books, err := h.stores.BookStore.List(ctx.GetContext(), int(offset), int(limit), filter)
 	if err != nil {
 		_ = ctx.SendError(err)
 		return
 	}
 
-	count, err := app.stores.BookStore.Count(ctx.GetContext(), search)
+	count, err := h.stores.BookStore.Count(ctx.GetContext(), filter)
 	if err != nil {
 		_ = ctx.SendError(err)
 		return
@@ -102,34 +111,4 @@ func (app *App) handleListBooks(ctx *httpkit.RequestContext) {
 			"items": books,
 			"count": count,
 		})
-}
-
-func (app *App) validateListParameters(ctx *httpkit.RequestContext) (int64, int64, bool) {
-	pageIDParam := ctx.Request.URL.Query().Get("page")
-	perPageParam := ctx.Request.URL.Query().Get("per_page")
-	var page, perPage int64 = defaultPage, defaultPerPage
-	var err error
-	if len(pageIDParam) > 0 {
-		page, err = strconv.ParseInt(pageIDParam, 10, 64)
-		if err != nil {
-			_ = ctx.SendJSON(
-				http.StatusBadRequest,
-				httpkit.VerdictInvalidParameters,
-				"offset is not an integer",
-				container.Map{})
-			return 0, 0, false
-		}
-	}
-	if len(perPageParam) > 0 {
-		perPage, err = strconv.ParseInt(perPageParam, 10, 64)
-		if err != nil {
-			_ = ctx.SendJSON(
-				http.StatusBadRequest,
-				httpkit.VerdictInvalidParameters,
-				"limit is not an integer",
-				container.Map{})
-			return 0, 0, false
-		}
-	}
-	return page, perPage, true
 }

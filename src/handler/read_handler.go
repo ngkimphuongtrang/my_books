@@ -6,39 +6,39 @@ import (
 	"github.com/trangnkp/my_books/src/httpkit"
 	"github.com/trangnkp/my_books/src/model"
 	"github.com/trangnkp/my_books/src/store"
+	"github.com/trangnkp/my_books/src/types"
 	"net/http"
 	"time"
 )
 
-type CreateReadRequest struct {
-	BookID       int64      `json:"book_id"`
-	Source       string     `json:"source"`
-	Language     string     `json:"language"`
-	FinishedDate *time.Time `json:"finished_date"`
+type ReadHandler struct {
+	stores     *store.DBStores
+	validation *Validation
 }
 
-func (app *App) handleCreateRead(ctx *httpkit.RequestContext) {
-	var r CreateReadRequest
-	if !app.validateCreateReadParameters(ctx, &r) {
+func NewReadHandler(stores *store.DBStores) *ReadHandler {
+	return &ReadHandler{
+		stores:     stores,
+		validation: NewValidation(),
+	}
+}
+
+func (h *ReadHandler) handleCreateRead(ctx *httpkit.RequestContext) {
+	var r types.CreateReadRequest
+	if !h.validateCreateReadParameters(ctx, &r) {
 		return
 	}
 
 	if r.Language == "" {
 		r.Language = store.LangVI.String()
 	}
-
-	book, err := app.stores.BookStore.FindByID(ctx.GetContext(), r.BookID)
-	if err != nil {
-		_ = ctx.SendError(err)
-		return
-	}
-	if book == nil {
-		_ = ctx.SendJSON(http.StatusNotFound, httpkit.VerdictRecordNotFound, "book_id not found", container.Map{})
+	bookID := h.getBookID(ctx, &r)
+	if bookID == 0 {
 		return
 	}
 
-	read := &model.Read{BookID: r.BookID, Source: r.Source, Language: r.Language, FinishedDate: *r.FinishedDate}
-	err = app.stores.ReadStore.Create(ctx.GetContext(), read)
+	read := &model.Read{BookID: bookID, Source: r.Source, Language: r.Language, FinishedDate: *r.FinishedDate}
+	err := h.stores.ReadStore.Create(ctx.GetContext(), read)
 	if err != nil {
 		_ = ctx.SendError(err)
 		return
@@ -47,7 +47,37 @@ func (app *App) handleCreateRead(ctx *httpkit.RequestContext) {
 	_ = ctx.SendJSON(http.StatusOK, httpkit.VerdictSuccess, "read is created successfully", container.Map{"id": read.ID})
 }
 
-func (app *App) validateCreateReadParameters(ctx *httpkit.RequestContext, r *CreateReadRequest) bool {
+func (h *ReadHandler) getBookID(ctx *httpkit.RequestContext, r *types.CreateReadRequest) int64 {
+	if r.BookID > 0 {
+		book, err := h.stores.BookStore.FindByID(ctx.GetContext(), r.BookID)
+		if err != nil {
+			_ = ctx.SendError(err)
+			return 0
+		}
+		if book == nil {
+			_ = ctx.SendJSON(http.StatusNotFound, httpkit.VerdictRecordNotFound, "book_id not found", container.Map{})
+			return 0
+		}
+		return r.BookID
+	}
+	filter := &store.ListBooksFilter{Name: r.BookName}
+	books, err := h.stores.BookStore.List(ctx.GetContext(), 0, 2, filter)
+	if err != nil {
+		_ = ctx.SendError(err)
+		return 0
+	}
+	if len(books) > 1 {
+		_ = ctx.SendJSON(http.StatusBadRequest, httpkit.VerdictUnspecifiedResource, "multiple books found", container.Map{})
+		return 0
+	}
+	if len(books) == 0 {
+		_ = ctx.SendJSON(http.StatusNotFound, httpkit.VerdictRecordNotFound, "book_name not found", container.Map{})
+		return 0
+	}
+	return books[0].ID
+}
+
+func (h *ReadHandler) validateCreateReadParameters(ctx *httpkit.RequestContext, r *types.CreateReadRequest) bool {
 	err := json.NewDecoder(ctx.Request.Body).Decode(r)
 	if err != nil {
 		_ = ctx.SendJSON(
@@ -57,7 +87,7 @@ func (app *App) validateCreateReadParameters(ctx *httpkit.RequestContext, r *Cre
 			container.Map{"error": err.Error()})
 		return false
 	}
-	missingParams := r.getMissingParams()
+	missingParams := r.GetMissingParams()
 	if len(missingParams) > 0 {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,
@@ -67,7 +97,16 @@ func (app *App) validateCreateReadParameters(ctx *httpkit.RequestContext, r *Cre
 		return false
 	}
 
-	if !isValidSource(r.Source) {
+	if r.BookID > 0 && r.BookName != "" {
+		_ = ctx.SendJSON(
+			http.StatusBadRequest,
+			httpkit.VerdictRedundant,
+			"book_id and book_name are mutually exclusive",
+			container.Map{})
+		return false
+
+	}
+	if !r.HasValidSource() {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,
 			httpkit.VerdictInvalidParameters,
@@ -80,47 +119,24 @@ func (app *App) validateCreateReadParameters(ctx *httpkit.RequestContext, r *Cre
 	return true
 }
 
-func (r *CreateReadRequest) getMissingParams() []string {
-	var missingParams []string
-	if r.BookID == 0 {
-		missingParams = append(missingParams, "book_id")
-	}
-	if r.Source == "" {
-		missingParams = append(missingParams, "source")
-	}
-	if r.FinishedDate == nil {
-		missingParams = append(missingParams, "finished_date")
-	}
-	return missingParams
-}
-
-func isValidSource(source string) bool {
-	for _, s := range store.ReadSources {
-		if source == s.String() {
-			return true
-		}
-	}
-	return false
-}
-
-func (app *App) handleListReads(ctx *httpkit.RequestContext) {
-	pageID, perPage, valid := app.validateListParameters(ctx)
+func (h *ReadHandler) handleListReads(ctx *httpkit.RequestContext) {
+	pageID, perPage, valid := h.validation.validateListParameters(ctx)
 	if !valid {
 		return
 	}
-	readFilter, valid := app.getReadFilter(ctx)
+	readFilter, valid := h.getReadFilter(ctx)
 	if !valid {
 		return
 	}
 
 	offset, limit := (pageID-1)*perPage, perPage
-	reads, err := app.stores.ReadStore.List(ctx.GetContext(), int(offset), int(limit), readFilter)
+	reads, err := h.stores.ReadStore.List(ctx.GetContext(), int(offset), int(limit), readFilter)
 	if err != nil {
 		_ = ctx.SendError(err)
 		return
 	}
 
-	count, err := app.stores.ReadStore.Count(ctx.GetContext(), readFilter)
+	count, err := h.stores.ReadStore.Count(ctx.GetContext(), readFilter)
 	if err != nil {
 		_ = ctx.SendError(err)
 		return
@@ -133,12 +149,12 @@ func (app *App) handleListReads(ctx *httpkit.RequestContext) {
 		})
 }
 
-func (app *App) getReadFilter(ctx *httpkit.RequestContext) (*store.ListReadsFilter, bool) {
+func (h *ReadHandler) getReadFilter(ctx *httpkit.RequestContext) (*store.ListReadsFilter, bool) {
 	fromYearParam := ctx.Request.URL.Query().Get("from_year")
 	toYearParam := ctx.Request.URL.Query().Get("to_year")
 	language := ctx.Request.URL.Query().Get("language")
 	source := ctx.Request.URL.Query().Get("source")
-	if len(source) > 0 && !isValidSource(source) {
+	if len(source) > 0 && !types.IsValidSource(source) {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,
 			httpkit.VerdictInvalidParameters,

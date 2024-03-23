@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `my_books`.`reads`
     `source` VARCHAR(127) NOT NULL DEFAULT '',
     `language` VARCHAR(31) NOT NULL DEFAULT '',
     `finished_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `note` TEXT NOT NULL DEFAULT '',
+    `note` TEXT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(`id`)
@@ -70,7 +70,7 @@ VALUES ('Khi lỗi thuộc về các vì sao', 'John Green'),
        ('Lịch sử Việt Nam bằng tranh - Trần Hưng Đạo', 'Trần Bạch Đằng'),
        ('Cây cam ngọt của tôi', 'Jose Mauro de Vansconcelos'),
        ('Giao tiếp bất kỳ ai', 'Jo Condrill'),
-       ('Nói nhiều không bằng nói đúng', '2.1/2')
+       ('Nói nhiều không bằng nói đúng', '2.1/2'),
        ('Chú bé mang Pyjama sọc', 'John Boyne'),
        ('Bước chậm lại giữa thế gian vội vã', 'Hae Min'),
        ('Không diệt không sinh đừng sợ hãi', 'Thích Nhất Hạnh'),
