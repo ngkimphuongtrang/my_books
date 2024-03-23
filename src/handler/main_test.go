@@ -34,8 +34,8 @@ func testMainWrapper(m *testing.M) int {
 	//	panic(err)
 	//}
 	seedData(stores)
-	bookHandler = NewBookHandler(stores)
-	readHandler = NewReadHandler(stores)
+	bookHandler = NewBookHandler(stores, nil)
+	readHandler = NewReadHandler(stores, nil)
 
 	testApp = NewApp(cfg, stores)
 	return m.Run()

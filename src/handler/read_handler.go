@@ -16,10 +16,10 @@ type ReadHandler struct {
 	validation *Validation
 }
 
-func NewReadHandler(stores *store.DBStores) *ReadHandler {
+func NewReadHandler(stores *store.DBStores, validation *Validation) *ReadHandler {
 	return &ReadHandler{
 		stores:     stores,
-		validation: NewValidation(),
+		validation: validation,
 	}
 }
 
@@ -104,8 +104,8 @@ func (h *ReadHandler) validateCreateReadParameters(ctx *httpkit.RequestContext, 
 			"book_id and book_name are mutually exclusive",
 			container.Map{})
 		return false
-
 	}
+
 	if !r.HasValidSource() {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,

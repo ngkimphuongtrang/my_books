@@ -9,9 +9,9 @@ type Handler struct {
 	*ReadHandler
 }
 
-func NewHandler(stores *store.DBStores) *Handler {
+func NewHandler(stores *store.DBStores, validation *Validation) *Handler {
 	return &Handler{
-		BookHandler: NewBookHandler(stores),
-		ReadHandler: NewReadHandler(stores),
+		BookHandler: NewBookHandler(stores, validation),
+		ReadHandler: NewReadHandler(stores, validation),
 	}
 }

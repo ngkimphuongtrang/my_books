@@ -33,8 +33,9 @@ func (app *App) setup() {
 	app.mux = http.NewServeMux()
 	app.httpHandler = app.mux
 	app.middlewares = []httpkit.Middleware{&httpkit.RequestTimeMiddleware{}}
-	app.handlers = NewHandler(app.stores)
 
+	validation := NewValidation()
+	app.handlers = NewHandler(app.stores, validation)
 	app.setupRoutes()
 }
 

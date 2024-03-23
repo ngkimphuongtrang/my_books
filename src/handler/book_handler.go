@@ -20,10 +20,10 @@ type BookHandler struct {
 	validation *Validation
 }
 
-func NewBookHandler(stores *store.DBStores) *BookHandler {
+func NewBookHandler(stores *store.DBStores, validation *Validation) *BookHandler {
 	return &BookHandler{
 		stores:     stores,
-		validation: NewValidation(),
+		validation: validation,
 	}
 }
 
