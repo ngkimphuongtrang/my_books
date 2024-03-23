@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 	"time"
-	
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/trangnkp/my_books/src/container"
@@ -88,15 +88,6 @@ func TestReadHandler_Create(t *testing.T) {
 				StatusCode: 404,
 				Verdict:    "record_not_found",
 				Message:    "book_id not found",
-			},
-		},
-		{
-			name:        "book_id_and_book_name_both_exist",
-			requestBody: container.Map{"source": "hard_copy", "language": "VI", "finished_date": time.Now().Format(time.RFC3339), "book_id": 1, "book_name": "book_name"},
-			expectedResponse: httpkit.Response{
-				StatusCode: 400,
-				Verdict:    "redundant",
-				Message:    "book_id and book_name are mutually exclusive",
 			},
 		},
 	}

@@ -49,33 +49,16 @@ func (h *ReadHandler) handleCreateRead(ctx *httpkit.RequestContext) {
 }
 
 func (h *ReadHandler) getBookID(ctx *httpkit.RequestContext, r *types.CreateReadRequest) int64 {
-	if r.BookID > 0 {
-		book, err := h.stores.BookStore.FindByID(ctx.GetContext(), r.BookID)
-		if err != nil {
-			_ = ctx.SendError(err)
-			return 0
-		}
-		if book == nil {
-			_ = ctx.SendJSON(http.StatusNotFound, httpkit.VerdictRecordNotFound, "book_id not found", container.Map{})
-			return 0
-		}
-		return r.BookID
-	}
-	filter := &store.ListBooksFilter{Name: r.BookName}
-	books, err := h.stores.BookStore.List(ctx.GetContext(), 0, 2, filter)
+	book, err := h.stores.BookStore.FindByID(ctx.GetContext(), r.BookID)
 	if err != nil {
 		_ = ctx.SendError(err)
 		return 0
 	}
-	if len(books) > 1 {
-		_ = ctx.SendJSON(http.StatusBadRequest, httpkit.VerdictUnspecifiedResource, "multiple books found", container.Map{})
+	if book == nil {
+		_ = ctx.SendJSON(http.StatusNotFound, httpkit.VerdictRecordNotFound, "book_id not found", container.Map{})
 		return 0
 	}
-	if len(books) == 0 {
-		_ = ctx.SendJSON(http.StatusNotFound, httpkit.VerdictRecordNotFound, "book_name not found", container.Map{})
-		return 0
-	}
-	return books[0].ID
+	return r.BookID
 }
 
 func (h *ReadHandler) validateCreateReadParameters(ctx *httpkit.RequestContext, r *types.CreateReadRequest) bool {
@@ -95,15 +78,6 @@ func (h *ReadHandler) validateCreateReadParameters(ctx *httpkit.RequestContext, 
 			httpkit.VerdictMissingParameters,
 			"some required parameters are missing",
 			container.Map{"missing_parameters": missingParams})
-		return false
-	}
-
-	if r.BookID > 0 && r.BookName != "" {
-		_ = ctx.SendJSON(
-			http.StatusBadRequest,
-			httpkit.VerdictRedundant,
-			"book_id and book_name are mutually exclusive",
-			container.Map{})
 		return false
 	}
 
