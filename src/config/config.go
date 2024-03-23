@@ -1,8 +1,9 @@
 package config
 
 import (
-	"github.com/trangnkp/my_books/src/db"
 	"time"
+
+	"github.com/trangnkp/my_books/src/db"
 )
 
 const (

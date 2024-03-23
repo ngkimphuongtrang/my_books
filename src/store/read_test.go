@@ -2,12 +2,13 @@ package store
 
 import (
 	"context"
+	"testing"
+	"time"
+
 	"github.com/stretchr/testify/require"
 	"github.com/trangnkp/my_books/src/config"
 	"github.com/trangnkp/my_books/src/db"
 	"github.com/trangnkp/my_books/src/model"
-	"testing"
-	"time"
 )
 
 func TestReadStore_Create(t *testing.T) {

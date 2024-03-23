@@ -3,14 +3,16 @@ package db
 import (
 	"errors"
 	"fmt"
-	"github.com/go-sql-driver/mysql"
-	"github.com/golang-migrate/migrate/v4"
-	log "github.com/sirupsen/logrus"
 	"os"
 	"regexp"
 	"sort"
 	"strconv"
 	"time"
+
+	"github.com/go-sql-driver/mysql"
+	"github.com/golang-migrate/migrate/v4"
+	log "github.com/sirupsen/logrus"
+
 	// load mysql
 	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 	// blank import

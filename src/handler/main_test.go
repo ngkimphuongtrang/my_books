@@ -2,12 +2,13 @@ package handler
 
 import (
 	"context"
+	"os"
+	"testing"
+
 	"github.com/trangnkp/my_books/src/config"
 	"github.com/trangnkp/my_books/src/model"
 	"github.com/trangnkp/my_books/src/store"
 	"github.com/trangnkp/my_books/src/util"
-	"os"
-	"testing"
 )
 
 var testApp *App

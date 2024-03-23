@@ -3,12 +3,13 @@ package store
 import (
 	"context"
 	"fmt"
+	"testing"
+
 	"github.com/stretchr/testify/require"
 	"github.com/trangnkp/my_books/src/config"
 	"github.com/trangnkp/my_books/src/db"
 	"github.com/trangnkp/my_books/src/helper"
 	"github.com/trangnkp/my_books/src/model"
-	"testing"
 )
 
 func TestBookStore_Create(t *testing.T) {
@@ -83,7 +84,6 @@ func TestBookStore_List(t *testing.T) {
 		name     string
 		offset   int
 		limit    int
-		search   string
 		filter   ListBooksFilter
 		minCount int
 		maxCount int
@@ -97,14 +97,12 @@ func TestBookStore_List(t *testing.T) {
 		{
 			name:     "empty_search",
 			limit:    5,
-			search:   "",
 			minCount: 4,
 			maxCount: 10,
 		},
 		{
 			name:     "valid_search",
 			limit:    5,
-			search:   "nhại",
 			filter:   ListBooksFilter{Name: "nhại"},
 			minCount: 1,
 			maxCount: 2,
@@ -112,9 +110,15 @@ func TestBookStore_List(t *testing.T) {
 		{
 			name:     "2_characters",
 			limit:    5,
-			search:   "ch",
 			filter:   ListBooksFilter{Name: "ch"},
 			minCount: 3,
+			maxCount: 5,
+		},
+		{
+			name:     "search_by_book_name",
+			limit:    10,
+			filter:   ListBooksFilter{Name: "lac loi giua co don"},
+			minCount: 1,
 			maxCount: 5,
 		},
 	}

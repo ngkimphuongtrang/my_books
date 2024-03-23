@@ -1,10 +1,11 @@
 package store
 
 import (
-	"github.com/trangnkp/my_books/src/config"
-	"github.com/trangnkp/my_books/src/util"
 	"os"
 	"testing"
+
+	"github.com/trangnkp/my_books/src/config"
+	"github.com/trangnkp/my_books/src/util"
 )
 
 var dbStores *DBStores
@@ -20,7 +21,7 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	if err = dbStores.Migrate(util.GetProjectRoot()); err != nil {
 		panic(err)
 	}

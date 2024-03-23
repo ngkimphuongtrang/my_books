@@ -1,10 +1,11 @@
 package store
 
 import (
-	log "github.com/sirupsen/logrus"
-	"github.com/trangnkp/my_books/src/db"
 	"gorm.io/gorm"
 	"path"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/trangnkp/my_books/src/db"
 )
 
 const (

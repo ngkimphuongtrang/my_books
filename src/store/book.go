@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"github.com/trangnkp/my_books/src/model"
 	"gorm.io/gorm"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/trangnkp/my_books/src/helper"
+	"github.com/trangnkp/my_books/src/model"
 )
 
 type BookStore struct {
@@ -66,7 +68,8 @@ func (s *BookStore) Count(ctx context.Context, filter *ListBooksFilter) (int64, 
 
 func (f *ListBooksFilter) buildQuery(db *gorm.DB) *gorm.DB {
 	if len(f.Name) > 0 {
-		db = db.Where("MATCH (name) AGAINST (? IN BOOLEAN MODE)", f.Name)
+		searchTerm := "\"" + helper.NormalizeUnicodeString(f.Name) + "\""
+		db = db.Where("MATCH (name) AGAINST (? IN BOOLEAN MODE)", searchTerm)
 	}
 
 	if len(f.Author) > 0 {

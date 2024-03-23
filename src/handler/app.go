@@ -1,12 +1,13 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/trangnkp/my_books/src/config"
 	"github.com/trangnkp/my_books/src/container"
 	"github.com/trangnkp/my_books/src/httpkit"
 	"github.com/trangnkp/my_books/src/store"
-	"net/http"
 )
 
 type App struct {

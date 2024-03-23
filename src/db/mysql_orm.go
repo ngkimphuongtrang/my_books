@@ -2,11 +2,12 @@ package db
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"time"
+
+	log "github.com/sirupsen/logrus"
+	"gorm.io/driver/mysql"
 )
 
 func ConnectORM(config *MySQLConfig) (*gorm.DB, error) {

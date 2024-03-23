@@ -2,13 +2,14 @@ package handler
 
 import (
 	"encoding/json"
+	"net/http"
+	"time"
+
 	"github.com/trangnkp/my_books/src/container"
 	"github.com/trangnkp/my_books/src/httpkit"
 	"github.com/trangnkp/my_books/src/model"
 	"github.com/trangnkp/my_books/src/store"
 	"github.com/trangnkp/my_books/src/types"
-	"net/http"
-	"time"
 )
 
 type ReadHandler struct {

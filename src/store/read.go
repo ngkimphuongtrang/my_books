@@ -3,9 +3,10 @@ package store
 import (
 	"context"
 	"fmt"
+	"gorm.io/gorm"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/trangnkp/my_books/src/model"
-	"gorm.io/gorm"
 )
 
 type ReadStore struct {

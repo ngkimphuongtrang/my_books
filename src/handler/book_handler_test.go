@@ -2,14 +2,15 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"github.com/trangnkp/my_books/src/container"
-	"github.com/trangnkp/my_books/src/httpkit"
 	"log"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/trangnkp/my_books/src/container"
+	"github.com/trangnkp/my_books/src/httpkit"
 )
 
 func TestBookHandler_Create(t *testing.T) {
