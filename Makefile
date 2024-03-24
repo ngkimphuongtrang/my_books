@@ -54,4 +54,15 @@ dev-ps:
 		-f docker/docker-compose.dev.yml \
 		-p $(GITHUB_SHA) ps -a
 
+prod-up:
+	@docker compose \
+		-f docker/docker-compose.prod.yml \
+		-p $(GITHUB_SHA) up --build -d
+
+prod-down:
+	@docker compose \
+		-f docker/docker-compose.prod.yml \
+		-p $(GITHUB_SHA) down \
+ 		-v --rmi local
+
 .PHONY: all fmt lint test install test-up test-down dev-up dev-down dev-ps build generate

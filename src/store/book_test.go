@@ -117,7 +117,7 @@ func TestBookStore_List(t *testing.T) {
 		{
 			name:     "search_by_book_name",
 			limit:    10,
-			filter:   ListBooksFilter{Name: "lac loi giua co don"},
+			filter:   ListBooksFilter{Name: "giet con chim nhai"},
 			minCount: 1,
 			maxCount: 5,
 		},

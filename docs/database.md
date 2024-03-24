@@ -74,7 +74,35 @@ Ultimately, if we plan to expand database in the future or potentially integrate
 ## References
 - Chat-GPT 4.0
 
+## Export and import data to Docker volume
+1. Export data 
+```
+$ docker exec <container_name> /usr/bin/mysqldump -u root --password=<password> <database_name> > backup.sql
+```
 
+```
+$ docker exec be6a599a11e1 /usr/bin/mysqldump -u admin --password=password my_books > backup.sql
+mysqldump: [Warning] Using a password on the command line interface can be insecure.
+mysqldump: Error: 'Access denied; you need (at least one of) the PROCESS privilege(s) for this operation' when trying to dump tablespaces
+
+```
+Hence use root user instead
+```
+$ docker exec be6a599a11e1 /usr/bin/mysqldump -u root --password= my_books > backup.sql
+mysqldump: [Warning] Using a password on the command line interface can be insecure.
+```
+
+2. Copy the sql backup file into container
+``` 
+$ docker cp backup.sql 74eab23e1121:/backup.sql
+Successfully copied 12.3kB to 74eab23e1121:/backup.sql
+```
+3. Import data
+
+``` 
+$ docker exec -i 74eab23e1121 mysql -u root --password= my_books < backup.sql 
+mysql: [Warning] Using a password on the command line interface can be insecure.
+```
 ### TODO
 - UT for handler: test path
 - should return id in GET /books?

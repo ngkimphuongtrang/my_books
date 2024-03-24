@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0.31
+    volumes:
+      - my_db_volume:/var/lib/mysql
+      - ./backup.sql:/docker-entrypoint-initdb.d/backup.sql
+    environment:
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=my_books
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    command: "--character-set-server=utf8mb4"
+    ports:
+      - "3306:3306"
+volumes:
+  my_db_volume:
+
+

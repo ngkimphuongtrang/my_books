@@ -19,8 +19,14 @@ To streamline this process, I have created a personal book management applicatio
 
 - Consistency: The server should provide clear and instructive responses, ensuring understandability even when a user submits an erroneous request.
 
+### Constraints & Challenges
+
+- Constraint 1. It is essential to implement a portable database solution to ensure data continuity, as there is a possibility that I may switch to a different laptop in the future, which would otherwise result in the loss of current data.
+
 ## Decision
 Given the context provided, it would be prudent to introduce a new module called "My Books," which would be responsible for creating book entries, logging reading sessions, and querying insights about books and reading trends in the database.
+
+- To handle Contraint 1, I have opted to utilize Docker volumes, which provide a means to persist data independently of the lifecycle of the database container, thereby safeguarding the data even in the event of container deletion.
 
 ### Database design
 Read [here](docs/database.md) to see how this design was decided.
@@ -168,4 +174,8 @@ Tracker creates a read with a created book
 | 200         | success           |      | Success, Return  list of reads |
 | 400         | invalid_parameter |      |                                |
 </details>
+
+
+
+
 
