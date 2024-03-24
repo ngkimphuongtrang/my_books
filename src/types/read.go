@@ -1,16 +1,15 @@
 package types
 
 import (
-	"time"
-
+	"github.com/trangnkp/my_books/src/model"
 	"github.com/trangnkp/my_books/src/store"
 )
 
 type CreateReadRequest struct {
-	BookID       int64      `json:"book_id"`
-	Source       string     `json:"source"`
-	Language     string     `json:"language"`
-	FinishedDate *time.Time `json:"finished_date"`
+	BookID       int64       `json:"book_id"`
+	Source       string      `json:"source"`
+	Language     string      `json:"language"`
+	FinishedDate *model.Date `json:"finished_date"`
 }
 
 func (r *CreateReadRequest) GetMissingParams() []string {

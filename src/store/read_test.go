@@ -3,7 +3,6 @@ package store
 import (
 	"context"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/require"
 	"github.com/trangnkp/my_books/src/config"
@@ -25,7 +24,7 @@ func TestReadStore_Create(t *testing.T) {
 			BookID:       1,
 			Source:       SourceAudio.String(),
 			Language:     LangVI.String(),
-			FinishedDate: time.Now(),
+			FinishedDate: model.NewDate(2024, 3, 24),
 		}
 
 		err := dbStores.ReadStore.Create(context.Background(), record)
@@ -50,7 +49,7 @@ func TestCreate_List(t *testing.T) {
 	record := &model.Read{
 		BookID:       1,
 		Source:       "hard_copy",
-		FinishedDate: time.Now().AddDate(-10, 0, 0),
+		FinishedDate: model.NewDate(2014, 3, 24),
 	}
 	err := dbStores.ReadStore.Create(context.Background(), record)
 	require.NoError(t, err)
@@ -135,7 +134,7 @@ func TestReadStore_Count(t *testing.T) {
 		for i := 0; i < n; i++ {
 			read := &model.Read{
 				BookID:       books[i].ID,
-				FinishedDate: time.Now(),
+				FinishedDate: model.NewDate(2024, 3, 24),
 			}
 			err = dbStores.ReadStore.Create(ctx, read)
 			require.NoError(t, err)

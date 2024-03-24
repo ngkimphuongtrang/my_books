@@ -38,7 +38,7 @@ func (h *ReadHandler) handleCreateRead(ctx *httpkit.RequestContext) {
 		return
 	}
 
-	read := &model.Read{BookID: bookID, Source: r.Source, Language: r.Language, FinishedDate: *r.FinishedDate}
+	read := &model.Read{BookID: bookID, Source: r.Source, Language: r.Language, FinishedDate: r.FinishedDate}
 	err := h.stores.ReadStore.Create(ctx.GetContext(), read)
 	if err != nil {
 		_ = ctx.SendError(err)

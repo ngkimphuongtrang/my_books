@@ -28,7 +28,7 @@ func TestReadHandler_Create(t *testing.T) {
 		{
 			name:         "success",
 			needSeedBook: true,
-			requestBody:  container.Map{"source": "hard_copy", "language": "VI", "finished_date": time.Now().Format(time.RFC3339)},
+			requestBody:  container.Map{"source": "hard_copy", "language": "VI", "finished_date": time.Now().Format("2006-01-02")},
 			expectedResponse: httpkit.Response{
 				StatusCode: 200,
 				Verdict:    "success",
@@ -38,7 +38,7 @@ func TestReadHandler_Create(t *testing.T) {
 		{
 			name:         "success_with_empty_language",
 			needSeedBook: true,
-			requestBody:  container.Map{"source": "hard_copy", "finished_date": time.Now().Format(time.RFC3339)},
+			requestBody:  container.Map{"source": "hard_copy", "finished_date": time.Now().Format("2006-01-02")},
 			expectedResponse: httpkit.Response{
 				StatusCode: 200,
 				Verdict:    "success",
@@ -47,7 +47,7 @@ func TestReadHandler_Create(t *testing.T) {
 		},
 		{
 			name:        "invalid_finished_date",
-			requestBody: container.Map{"source": "", "language": "", "finished_date": "2022-02-02"},
+			requestBody: container.Map{"source": "", "language": "", "finished_date": time.Now().Format(time.RFC3339)},
 			expectedResponse: httpkit.Response{
 				StatusCode: 400,
 				Verdict:    "invalid_parameters",
@@ -56,7 +56,7 @@ func TestReadHandler_Create(t *testing.T) {
 		},
 		{
 			name:        "missing_params",
-			requestBody: container.Map{"source": "", "language": "C", "finished_date": time.Now().Format(time.RFC3339), "book_id": 1},
+			requestBody: container.Map{"source": "", "language": "C", "finished_date": time.Now().Format("2006-01-02"), "book_id": 1},
 			expectedResponse: httpkit.Response{
 				StatusCode: 400,
 				Verdict:    "missing_parameters",
@@ -65,7 +65,7 @@ func TestReadHandler_Create(t *testing.T) {
 		},
 		{
 			name:        "missing_params_book_id_and_book_name",
-			requestBody: container.Map{"source": "", "language": "C", "finished_date": time.Now().Format(time.RFC3339)},
+			requestBody: container.Map{"source": "", "language": "C", "finished_date": time.Now().Format("2006-01-02")},
 			expectedResponse: httpkit.Response{
 				StatusCode: 400,
 				Verdict:    "missing_parameters",
@@ -74,7 +74,7 @@ func TestReadHandler_Create(t *testing.T) {
 		},
 		{
 			name:        "invalid_source_read",
-			requestBody: container.Map{"source": "library", "language": "VI", "finished_date": time.Now().Format(time.RFC3339), "book_id": 1},
+			requestBody: container.Map{"source": "library", "language": "VI", "finished_date": time.Now().Format("2006-01-02"), "book_id": 1},
 			expectedResponse: httpkit.Response{
 				StatusCode: 400,
 				Verdict:    "invalid_parameters",
@@ -83,7 +83,7 @@ func TestReadHandler_Create(t *testing.T) {
 		},
 		{
 			name:        "book_not_found",
-			requestBody: container.Map{"source": "hard_copy", "finished_date": time.Now().Format(time.RFC3339), "book_id": 100},
+			requestBody: container.Map{"source": "hard_copy", "finished_date": time.Now().Format("2006-01-02"), "book_id": 100},
 			expectedResponse: httpkit.Response{
 				StatusCode: 404,
 				Verdict:    "record_not_found",
@@ -107,7 +107,6 @@ func TestReadHandler_Create(t *testing.T) {
 				require.NoError(t, err)
 				tc.requestBody["book_id"] = randomBook.ID
 			}
-			//log.Println(tc.requestBody.ToJSONString())
 			requestBody, err := tc.requestBody.JSON()
 			require.NoError(t, err)
 			ctx := &httpkit.RequestContext{
@@ -165,7 +164,7 @@ func TestReadHandler_List(t *testing.T) {
 				randomRead := &model.Read{
 					BookID:       1,
 					Source:       "hard_copy",
-					FinishedDate: time.Now(),
+					FinishedDate: model.NewDate(2024, 03, 24),
 				}
 				err := testApp.stores.ReadStore.Create(context.Background(), randomRead)
 				require.NoError(t, err)
