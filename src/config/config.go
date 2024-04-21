@@ -3,7 +3,7 @@ package config
 import (
 	"time"
 
-	"github.com/trangnkp/my_books/src/db"
+	"github.com/trangnkp/my_books/src/internal/db"
 )
 
 const (

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/trangnkp/my_books/src/httpkit"
+	"github.com/trangnkp/my_books/src/internal/httpkit"
 )
 
 func TestValidation_validateListParameters(t *testing.T) {

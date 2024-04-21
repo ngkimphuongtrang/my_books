@@ -5,7 +5,7 @@ import (
 	"path"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/trangnkp/my_books/src/db"
+	"github.com/trangnkp/my_books/src/internal/db"
 )
 
 const (

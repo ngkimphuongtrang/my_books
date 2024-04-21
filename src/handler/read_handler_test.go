@@ -11,8 +11,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/trangnkp/my_books/src/container"
-	"github.com/trangnkp/my_books/src/httpkit"
+	"github.com/trangnkp/my_books/src/internal/container"
+	"github.com/trangnkp/my_books/src/internal/httpkit"
 	"github.com/trangnkp/my_books/src/model"
 )
 

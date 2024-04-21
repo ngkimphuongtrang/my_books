@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/trangnkp/my_books/src/container"
-	"github.com/trangnkp/my_books/src/httpkit"
+	"github.com/trangnkp/my_books/src/internal/container"
+	"github.com/trangnkp/my_books/src/internal/httpkit"
 )
 
 func (app *App) handlePing(ctx *httpkit.RequestContext) {

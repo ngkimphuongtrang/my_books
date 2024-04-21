@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/trangnkp/my_books/src/container"
+	"github.com/trangnkp/my_books/src/internal/container"
 )
 
 type RequestContext struct {

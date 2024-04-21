@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/trangnkp/my_books/src/container"
+	"github.com/trangnkp/my_books/src/internal/container"
 )
 
 type Response struct {

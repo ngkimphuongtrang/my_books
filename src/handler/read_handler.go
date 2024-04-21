@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/trangnkp/my_books/src/container"
-	"github.com/trangnkp/my_books/src/httpkit"
+	"github.com/trangnkp/my_books/src/internal/container"
+	"github.com/trangnkp/my_books/src/internal/httpkit"
 	"github.com/trangnkp/my_books/src/model"
 	"github.com/trangnkp/my_books/src/store"
 	"github.com/trangnkp/my_books/src/types"

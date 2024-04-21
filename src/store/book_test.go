@@ -7,8 +7,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/trangnkp/my_books/src/config"
-	"github.com/trangnkp/my_books/src/db"
 	"github.com/trangnkp/my_books/src/helper"
+	"github.com/trangnkp/my_books/src/internal/db"
 	"github.com/trangnkp/my_books/src/model"
 )
 

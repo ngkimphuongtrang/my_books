@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/trangnkp/my_books/src/container"
-	"github.com/trangnkp/my_books/src/httpkit"
+	"github.com/trangnkp/my_books/src/internal/container"
+	"github.com/trangnkp/my_books/src/internal/httpkit"
 )
 
 const (
