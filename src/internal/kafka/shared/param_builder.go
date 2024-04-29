@@ -1,7 +1,7 @@
 package shared
 
 import (
-	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/trangnkp/my_books/src/internal/container"
 )
 

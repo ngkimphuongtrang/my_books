@@ -3,7 +3,7 @@ package kafka
 import (
 	"errors"
 
-	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/trangnkp/my_books/src/internal/kafka/shared"
 )
 
