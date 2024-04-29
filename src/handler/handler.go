@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/trangnkp/my_books/src/store"
+	"github.com/trangnkp/my_books/src/serverenv"
 )
 
 type Handler struct {
@@ -9,9 +9,9 @@ type Handler struct {
 	*ReadHandler
 }
 
-func NewHandler(stores *store.DBStores, validation *Validation) *Handler {
+func NewHandler(env *serverenv.ServerEnv, validation *Validation) *Handler {
 	return &Handler{
-		BookHandler: NewBookHandler(stores, validation),
-		ReadHandler: NewReadHandler(stores, validation),
+		BookHandler: NewBookHandler(env.DBStores, validation),
+		ReadHandler: NewReadHandler(env, validation),
 	}
 }

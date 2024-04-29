@@ -5,22 +5,27 @@ import (
 	"net/http"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/trangnkp/my_books/src/internal/container"
 	"github.com/trangnkp/my_books/src/internal/httpkit"
 	"github.com/trangnkp/my_books/src/model"
+	"github.com/trangnkp/my_books/src/serverenv"
+	"github.com/trangnkp/my_books/src/service"
 	"github.com/trangnkp/my_books/src/store"
 	"github.com/trangnkp/my_books/src/types"
 )
 
 type ReadHandler struct {
-	stores     *store.DBStores
-	validation *Validation
+	stores              *store.DBStores
+	validation          *Validation
+	notificationService *service.KafkaNotificationService
 }
 
-func NewReadHandler(stores *store.DBStores, validation *Validation) *ReadHandler {
+func NewReadHandler(env *serverenv.ServerEnv, validation *Validation) *ReadHandler {
 	return &ReadHandler{
-		stores:     stores,
-		validation: validation,
+		stores:              env.DBStores,
+		validation:          validation,
+		notificationService: env.NotificationService,
 	}
 }
 
@@ -46,6 +51,11 @@ func (h *ReadHandler) handleCreateRead(ctx *httpkit.RequestContext) {
 	}
 
 	_ = ctx.SendJSON(http.StatusOK, httpkit.VerdictSuccess, "read is created successfully", container.Map{"id": read.ID})
+
+	err = h.sendEmail("read is created successfully")
+	if err != nil {
+		log.Error(err)
+	}
 }
 
 func (h *ReadHandler) getBookID(ctx *httpkit.RequestContext, r *types.CreateReadRequest) int64 {
@@ -169,4 +179,20 @@ func (h *ReadHandler) getReadFilter(ctx *httpkit.RequestContext) (*store.ListRea
 		Language: language,
 		Source:   source,
 	}, true
+}
+
+func (h *ReadHandler) sendEmail(content string) error {
+	rawPayload, err := json.Marshal(content)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+
+	if _, err = h.notificationService.Producer.Produce(h.notificationService.Producer.Topic(), []byte("nkpt"), rawPayload); err != nil {
+		log.Error(err)
+		return err
+	}
+
+	log.Info("send email successfully")
+	return nil
 }

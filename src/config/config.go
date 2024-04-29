@@ -20,8 +20,9 @@ const (
 )
 
 type AppConfig struct {
-	Server *ServerConfig
-	DB     *db.MySQLConfig
+	Server              *ServerConfig
+	DB                  *db.MySQLConfig
+	KafkaProducerConfig *KafkaProducerConfig
 }
 
 type ServerConfig struct {
@@ -30,10 +31,23 @@ type ServerConfig struct {
 	ReadHeaderTimeout time.Duration
 }
 
+type (
+	KafkaBrokerConfig struct {
+		Brokers   string `yaml:"brokers" validate:"nonzero"`
+		Mechanism string `yaml:"mechanism"`
+	}
+
+	KafkaProducerConfig struct {
+		Broker *KafkaBrokerConfig `yaml:"broker" validate:"nonzero"`
+		Topic  string             `yaml:"topic" validate:"nonzero"`
+	}
+)
+
 func New() *AppConfig {
 	return &AppConfig{
-		Server: NewServerConfig(),
-		DB:     NewDBConfig(),
+		Server:              NewServerConfig(),
+		DB:                  NewDBConfig(),
+		KafkaProducerConfig: NewKafkaProducerConfig(),
 	}
 }
 
@@ -54,5 +68,15 @@ func NewDBConfig() *db.MySQLConfig {
 		ConnectionLifetimeSeconds: dbConnectionLifetimeSeconds,
 		MaxIdleConnections:        dbMaxIdleConnection,
 		MaxOpenConnections:        dbMaxOpenConnection,
+	}
+}
+
+func NewKafkaProducerConfig() *KafkaProducerConfig {
+	return &KafkaProducerConfig{
+		Broker: &KafkaBrokerConfig{
+			Brokers:   "localhost:19092",
+			Mechanism: "PLAINTEXT",
+		},
+		Topic: "notification.email",
 	}
 }

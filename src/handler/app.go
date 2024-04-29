@@ -7,7 +7,7 @@ import (
 	"github.com/trangnkp/my_books/src/config"
 	"github.com/trangnkp/my_books/src/internal/container"
 	"github.com/trangnkp/my_books/src/internal/httpkit"
-	"github.com/trangnkp/my_books/src/store"
+	"github.com/trangnkp/my_books/src/serverenv"
 )
 
 type App struct {
@@ -15,16 +15,17 @@ type App struct {
 	httpHandler http.Handler
 	middlewares []httpkit.Middleware
 
-	config *config.AppConfig
-
-	stores   *store.DBStores
-	handlers *Handler
+	serverEnv *serverenv.ServerEnv
+	handlers  *Handler
 }
 
-func NewApp(cfg *config.AppConfig, stores *store.DBStores) *App {
+func NewApp(cfg *config.AppConfig) *App {
+	env, err := serverenv.NewServerEnv(cfg)
+	if err != nil {
+		panic(err)
+	}
 	app := &App{
-		config: cfg,
-		stores: stores,
+		serverEnv: env,
 	}
 	app.setup()
 	return app
@@ -36,7 +37,7 @@ func (app *App) setup() {
 	app.middlewares = []httpkit.Middleware{&httpkit.RequestTimeMiddleware{}}
 
 	validation := NewValidation()
-	app.handlers = NewHandler(app.stores, validation)
+	app.handlers = NewHandler(app.serverEnv, validation)
 	app.setupRoutes()
 }
 
@@ -99,9 +100,9 @@ func (app *App) addPublicRouteHandlers(routeHandlers ...*httpkit.RouteHandler) {
 
 func (app *App) Start() {
 	server := http.Server{
-		Addr:              app.config.Server.Port,
+		Addr:              app.serverEnv.Config.Server.Port,
 		Handler:           app.httpHandler,
-		ReadHeaderTimeout: app.config.Server.ReadHeaderTimeout,
+		ReadHeaderTimeout: app.serverEnv.Config.Server.ReadHeaderTimeout,
 	}
 	err := server.ListenAndServe()
 	if err != nil {

@@ -18,6 +18,6 @@ func main() {
 		panic(err)
 	}
 
-	app := handler.NewApp(cfg, stores)
+	app := handler.NewApp(cfg)
 	app.Start()
 }

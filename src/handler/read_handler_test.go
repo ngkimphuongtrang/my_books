@@ -103,7 +103,7 @@ func TestReadHandler_Create(t *testing.T) {
 					Name:   tc.name,
 					Author: tc.name,
 				}
-				err := testApp.stores.BookStore.Create(context.Background(), randomBook)
+				err := testApp.serverEnv.DBStores.BookStore.Create(context.Background(), randomBook)
 				require.NoError(t, err)
 				tc.requestBody["book_id"] = randomBook.ID
 			}
@@ -166,7 +166,7 @@ func TestReadHandler_List(t *testing.T) {
 					Source:       "hard_copy",
 					FinishedDate: model.NewDate(2024, 03, 24),
 				}
-				err := testApp.stores.ReadStore.Create(context.Background(), randomRead)
+				err := testApp.serverEnv.DBStores.ReadStore.Create(context.Background(), randomRead)
 				require.NoError(t, err)
 			}
 			ctx := &httpkit.RequestContext{

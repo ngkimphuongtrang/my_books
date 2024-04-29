@@ -7,6 +7,7 @@ import (
 
 	"github.com/trangnkp/my_books/src/config"
 	"github.com/trangnkp/my_books/src/model"
+	"github.com/trangnkp/my_books/src/serverenv"
 	"github.com/trangnkp/my_books/src/store"
 	"github.com/trangnkp/my_books/src/util"
 )
@@ -31,14 +32,16 @@ func testMainWrapper(m *testing.M) int {
 	if err != nil {
 		panic(err)
 	}
-	//if err = stores.Migrate(util.GetProjectRoot()); err != nil {
-	//	panic(err)
-	//}
+
+	env, err := serverenv.NewServerEnv(cfg)
+	if err != nil {
+		panic(err)
+	}
 	seedData(stores)
 	bookHandler = NewBookHandler(stores, nil)
-	readHandler = NewReadHandler(stores, nil)
+	readHandler = NewReadHandler(env, nil)
 
-	testApp = NewApp(cfg, stores)
+	testApp = NewApp(cfg)
 	return m.Run()
 }
 

@@ -7,6 +7,17 @@ import (
 
 type Map map[string]interface{}
 
+func (m Map) Merge(other Map) Map {
+	result := Map{}
+	for key, val := range m {
+		result[key] = val
+	}
+	for key, val := range other {
+		result[key] = val
+	}
+	return result
+}
+
 // JSON converts map to JSON string
 func (m Map) JSON() (string, error) {
 	b, err := json.Marshal(m)
