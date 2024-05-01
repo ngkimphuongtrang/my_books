@@ -4,8 +4,8 @@ import (
 	"gorm.io/gorm"
 	"path"
 
+	"github.com/ngkimphuongtrang/runkit/db"
 	log "github.com/sirupsen/logrus"
-	"github.com/trangnkp/my_books/src/internal/db"
 )
 
 const (

@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/ngkimphuongtrang/runkit/container"
+	"github.com/ngkimphuongtrang/runkit/httpkit"
 	"github.com/trangnkp/my_books/src/config"
-	"github.com/trangnkp/my_books/src/internal/container"
-	"github.com/trangnkp/my_books/src/internal/httpkit"
 	"github.com/trangnkp/my_books/src/serverenv"
 )
 

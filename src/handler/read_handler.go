@@ -5,9 +5,10 @@ import (
 	"net/http"
 	"time"
 
+	_const "github.com/ngkimphuongtrang/runkit/const"
+	"github.com/ngkimphuongtrang/runkit/container"
+	"github.com/ngkimphuongtrang/runkit/httpkit"
 	log "github.com/sirupsen/logrus"
-	"github.com/trangnkp/my_books/src/internal/container"
-	"github.com/trangnkp/my_books/src/internal/httpkit"
 	"github.com/trangnkp/my_books/src/model"
 	"github.com/trangnkp/my_books/src/serverenv"
 	"github.com/trangnkp/my_books/src/service"
@@ -50,7 +51,7 @@ func (h *ReadHandler) handleCreateRead(ctx *httpkit.RequestContext) {
 		return
 	}
 
-	_ = ctx.SendJSON(http.StatusOK, httpkit.VerdictSuccess, "read is created successfully", container.Map{"id": read.ID})
+	_ = ctx.SendJSON(http.StatusOK, _const.VerdictSuccess, "read is created successfully", container.Map{"id": read.ID})
 
 	err = h.sendEmail("read is created successfully")
 	if err != nil {
@@ -65,7 +66,7 @@ func (h *ReadHandler) getBookID(ctx *httpkit.RequestContext, r *types.CreateRead
 		return 0
 	}
 	if book == nil {
-		_ = ctx.SendJSON(http.StatusNotFound, httpkit.VerdictRecordNotFound, "book_id not found", container.Map{})
+		_ = ctx.SendJSON(http.StatusNotFound, _const.VerdictRecordNotFound, "book_id not found", container.Map{})
 		return 0
 	}
 	return r.BookID
@@ -76,7 +77,7 @@ func (h *ReadHandler) validateCreateReadParameters(ctx *httpkit.RequestContext, 
 	if err != nil {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,
-			httpkit.VerdictInvalidParameters,
+			_const.VerdictInvalidParameters,
 			"parameters are invalid",
 			container.Map{"error": err.Error()})
 		return false
@@ -85,7 +86,7 @@ func (h *ReadHandler) validateCreateReadParameters(ctx *httpkit.RequestContext, 
 	if len(missingParams) > 0 {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,
-			httpkit.VerdictMissingParameters,
+			_const.VerdictMissingParameters,
 			"some required parameters are missing",
 			container.Map{"missing_parameters": missingParams})
 		return false
@@ -94,7 +95,7 @@ func (h *ReadHandler) validateCreateReadParameters(ctx *httpkit.RequestContext, 
 	if !r.HasValidSource() {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,
-			httpkit.VerdictInvalidParameters,
+			_const.VerdictInvalidParameters,
 			"source is invalid",
 			container.Map{"valid_sources": store.ReadSources})
 		return false
@@ -127,7 +128,7 @@ func (h *ReadHandler) handleListReads(ctx *httpkit.RequestContext) {
 		return
 	}
 
-	_ = ctx.SendJSON(http.StatusOK, httpkit.VerdictSuccess, "list reads successfully",
+	_ = ctx.SendJSON(http.StatusOK, _const.VerdictSuccess, "list reads successfully",
 		container.Map{
 			"items": reads,
 			"count": count,
@@ -142,7 +143,7 @@ func (h *ReadHandler) getReadFilter(ctx *httpkit.RequestContext) (*store.ListRea
 	if len(source) > 0 && !types.IsValidSource(source) {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,
-			httpkit.VerdictInvalidParameters,
+			_const.VerdictInvalidParameters,
 			"source is invalid",
 			container.Map{"valid_sources": store.ReadSources})
 		return nil, false
@@ -153,7 +154,7 @@ func (h *ReadHandler) getReadFilter(ctx *httpkit.RequestContext) (*store.ListRea
 		if err != nil {
 			_ = ctx.SendJSON(
 				http.StatusBadRequest,
-				httpkit.VerdictInvalidParameters,
+				_const.VerdictInvalidParameters,
 				"from_year is in invalid format",
 				container.Map{"required_format": "2006"})
 			return nil, false
@@ -165,7 +166,7 @@ func (h *ReadHandler) getReadFilter(ctx *httpkit.RequestContext) (*store.ListRea
 		if err != nil {
 			_ = ctx.SendJSON(
 				http.StatusBadRequest,
-				httpkit.VerdictInvalidParameters,
+				_const.VerdictInvalidParameters,
 				"to_year is in invalid format",
 				container.Map{"required_format": "2006"})
 			return nil, false

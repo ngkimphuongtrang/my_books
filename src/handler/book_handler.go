@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/trangnkp/my_books/src/internal/container"
-	"github.com/trangnkp/my_books/src/internal/httpkit"
+	"github.com/ngkimphuongtrang/runkit/const"
+	"github.com/ngkimphuongtrang/runkit/container"
+	"github.com/ngkimphuongtrang/runkit/httpkit"
 	"github.com/trangnkp/my_books/src/model"
 	"github.com/trangnkp/my_books/src/store"
 	"github.com/trangnkp/my_books/src/types"
@@ -36,7 +37,7 @@ func (h *BookHandler) handleCreateBook(ctx *httpkit.RequestContext) {
 	if bookID > 0 {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,
-			httpkit.VerdictExistedRecord,
+			_const.VerdictExistedRecord,
 			"duplicated book name and author",
 			container.Map{"book_id": bookID})
 		return
@@ -49,7 +50,7 @@ func (h *BookHandler) handleCreateBook(ctx *httpkit.RequestContext) {
 		return
 	}
 
-	_ = ctx.SendJSON(http.StatusOK, httpkit.VerdictSuccess, "book is created successfully", container.Map{"id": book.ID})
+	_ = ctx.SendJSON(http.StatusOK, _const.VerdictSuccess, "book is created successfully", container.Map{"id": book.ID})
 }
 
 func (h *BookHandler) validateCreateBookParameters(ctx *httpkit.RequestContext, r *types.CreateBookRequest) bool {
@@ -57,7 +58,7 @@ func (h *BookHandler) validateCreateBookParameters(ctx *httpkit.RequestContext, 
 	if err != nil {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,
-			httpkit.VerdictInvalidParameters,
+			_const.VerdictInvalidParameters,
 			"parameters are invalid",
 			container.Map{})
 		return false
@@ -72,7 +73,7 @@ func (h *BookHandler) validateCreateBookParameters(ctx *httpkit.RequestContext, 
 	if len(missingParams) > 0 {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,
-			httpkit.VerdictMissingParameters,
+			_const.VerdictMissingParameters,
 			"some required parameters are missing",
 			container.Map{"missing_parameters": missingParams})
 		return false
@@ -102,7 +103,7 @@ func (h *BookHandler) handleListBooks(ctx *httpkit.RequestContext) {
 		return
 	}
 
-	_ = ctx.SendJSON(http.StatusOK, httpkit.VerdictSuccess, "get list of books successfully",
+	_ = ctx.SendJSON(http.StatusOK, _const.VerdictSuccess, "get list of books successfully",
 		container.Map{
 			"items": books,
 			"count": count,

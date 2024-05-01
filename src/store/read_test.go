@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ngkimphuongtrang/runkit/db"
 	"github.com/stretchr/testify/require"
 	"github.com/trangnkp/my_books/src/config"
-	"github.com/trangnkp/my_books/src/internal/db"
 	"github.com/trangnkp/my_books/src/model"
 )
 

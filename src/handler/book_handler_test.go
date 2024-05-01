@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ngkimphuongtrang/runkit/container"
+	"github.com/ngkimphuongtrang/runkit/httpkit"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/trangnkp/my_books/src/internal/container"
-	"github.com/trangnkp/my_books/src/internal/httpkit"
 )
 
 func TestBookHandler_Create(t *testing.T) {

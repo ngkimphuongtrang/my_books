@@ -3,7 +3,7 @@ package config
 import (
 	"time"
 
-	"github.com/trangnkp/my_books/src/internal/db"
+	"github.com/ngkimphuongtrang/runkit/db"
 )
 
 const (

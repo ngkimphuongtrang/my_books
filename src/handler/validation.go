@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/trangnkp/my_books/src/internal/container"
-	"github.com/trangnkp/my_books/src/internal/httpkit"
+	_const "github.com/ngkimphuongtrang/runkit/const"
+	"github.com/ngkimphuongtrang/runkit/container"
+	"github.com/ngkimphuongtrang/runkit/httpkit"
 )
 
 const (
@@ -32,7 +33,7 @@ func (v *Validation) validateListParameters(ctx *httpkit.RequestContext) (offset
 	if page < 1 || perPage < 1 {
 		_ = ctx.SendJSON(
 			http.StatusBadRequest,
-			httpkit.VerdictInvalidParameters,
+			_const.VerdictInvalidParameters,
 			"page and per_page must be positive integers",
 			container.Map{})
 		return 0, 0, false
@@ -48,7 +49,7 @@ func (v *Validation) parsePaginationParams(ctx *httpkit.RequestContext, paramNam
 		if err != nil {
 			_ = ctx.SendJSON(
 				http.StatusBadRequest,
-				httpkit.VerdictInvalidParameters,
+				_const.VerdictInvalidParameters,
 				paramName+" is not an integer",
 				container.Map{})
 			return 0, false
